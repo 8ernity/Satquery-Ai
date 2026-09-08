@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: bhuvision-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_BASE_URL=http://host.docker.internal:3001/v1
+      - OPENAI_API_KEY=sk-freellmapi-unified
+      - VLM_BACKEND=demo
+      - DEMO_MODE=true
+      - CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: bhuvision-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api
+    depends_on:
+      - backend
+    restart: unless-stopped
