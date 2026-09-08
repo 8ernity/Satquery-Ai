@@ -27,6 +27,13 @@ class Settings(BaseSettings):
     vlm_backend: Literal["gateway", "vllm", "demo"] = "demo"
     vllm_api_url: str = "http://localhost:8080/v1"
 
+    # --- Location & Spatial Data API Keys ---
+    google_maps_api_key: str | None = None
+    nasa_earthdata_token: str | None = None
+    mapbox_token: str | None = None
+    copernicus_client_id: str | None = None
+    copernicus_client_secret: str | None = None
+
     # --- Demo Mode ---
     demo_mode: bool = False
 
