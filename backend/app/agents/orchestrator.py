@@ -41,7 +41,7 @@ from ..schemas.investigation import (
     InvestigationResponse,
     InvestigationStatus,
 )
-from ..schemas.trace import ExecutionTrace, TraceEventType
+from ..schemas.trace import ExecutionTrace, TraceEvent, TraceEventType
 from .audit_trace import AuditTraceAgent
 from .change_detection import ChangeDetectionAgent
 from .confidence_agent import ConfidenceAgent

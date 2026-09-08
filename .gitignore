@@ -57,3 +57,7 @@ Thumbs.db
 # Logs
 *.log
 logs/
+
+# Data & Demo Caches
+data/
+backend/data/
