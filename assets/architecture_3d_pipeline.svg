@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 680" width="100%" height="100%">
+  <defs>
+    <linearGradient id="tier1Grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="tier2Grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F2557"/>
+      <stop offset="100%" stop-color="#1A365D"/>
+    </linearGradient>
+    <linearGradient id="tier3Grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#312E81"/>
+    </linearGradient>
+    <linearGradient id="pulseLine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#06B6D4" stop-opacity="0.2"/>
+    </linearGradient>
+    <filter id="shadow3D" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <style>
+    @keyframes pulseDash { to { stroke-dashoffset: -40; } }
+    .pulse-data { stroke-dasharray: 6, 6; animation: pulseDash 1.5s linear infinite; }
+    .font-sans { font-family: 'Space Grotesk', -apple-system, sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+  </style>
+
+  <rect width="1100" height="680" fill="#030712"/>
+
+  <!-- Title Header -->
+  <g transform="translate(50, 40)">
+    <text x="0" y="0" fill="#38BDF8" font-size="12" font-weight="bold" class="font-mono">
+      SYSTEM TOPOLOGY // MULTI-TIER 3D ISOMETRIC SPECIFICATION
+    </text>
+    <text x="0" y="28" fill="#FFFFFF" font-size="24" font-weight="bold" class="font-sans">
+      BHUVISION 3-Tier Cognitive &amp; Spatial Architecture
+    </text>
+  </g>
+
+  <!-- ================= TIER 1 (TOP): 3D SPATIAL PRESENTATION ================= -->
+  <g transform="translate(100, 110)" filter="url(#shadow3D)">
+    <polygon points="450,0 900,60 450,120 0,60" fill="#0B1329" stroke="#0284C7" stroke-width="2"/>
+    <polygon points="0,60 450,120 450,140 0,80" fill="#061220"/>
+    <polygon points="450,120 900,60 900,80 450,140" fill="#040D17"/>
+    
+    <!-- Tier Label -->
+    <text x="450" y="45" text-anchor="middle" fill="#38BDF8" font-size="13" font-weight="bold" class="font-mono">
+      TIER 1: PRESENTATION &amp; 3D SPATIAL SURVEILLANCE COCKPIT
+    </text>
+    
+    <!-- 3 Blocks on Platform -->
+    <g transform="translate(160, 48)">
+      <rect x="0" y="0" width="160" height="34" rx="4" fill="#071933" stroke="#38BDF8" stroke-width="1.2"/>
+      <text x="80" y="21" text-anchor="middle" fill="#FFFFFF" font-size="10.5" font-weight="bold" class="font-sans">
+        Three.js 3D Earth Engine
+      </text>
+    </g>
+    <g transform="translate(370, 48)">
+      <rect x="0" y="0" width="160" height="34" rx="4" fill="#071933" stroke="#38BDF8" stroke-width="1.2"/>
+      <text x="80" y="21" text-anchor="middle" fill="#FFFFFF" font-size="10.5" font-weight="bold" class="font-sans">
+        2D Nadir &amp; 3D Oblique Tilt
+      </text>
+    </g>
+    <g transform="translate(580, 48)">
+      <rect x="0" y="0" width="160" height="34" rx="4" fill="#071933" stroke="#38BDF8" stroke-width="1.2"/>
+      <text x="80" y="21" text-anchor="middle" fill="#FFFFFF" font-size="10.5" font-weight="bold" class="font-sans">
+        Temporal Bi-Slippy Slider
+      </text>
+    </g>
+  </g>
+
+  <!-- Connectors Tier 1 to Tier 2 -->
+  <g stroke="#38BDF8" stroke-width="1.8" class="pulse-data">
+    <line x1="320" y1="235" x2="320" y2="295"/>
+    <line x1="550" y1="245" x2="550" y2="305"/>
+    <line x1="780" y1="235" x2="780" y2="295"/>
+  </g>
+
+  <!-- ================= TIER 2 (MIDDLE): 9-AGENT COGNITIVE ENGINE ================= -->
+  <g transform="translate(100, 290)" filter="url(#shadow3D)">
+    <polygon points="450,0 900,60 450,120 0,60" fill="#0A1E3F" stroke="#3B82F6" stroke-width="2"/>
+    <polygon points="0,60 450,120 450,140 0,80" fill="#07152D"/>
+    <polygon points="450,120 900,60 900,80 450,140" fill="#050F21"/>
+
+    <!-- Tier Label -->
+    <text x="450" y="45" text-anchor="middle" fill="#60A5FA" font-size="13" font-weight="bold" class="font-mono">
+      TIER 2: 9-AGENT CONTROLLED COGNITIVE ORCHESTRATION (FastAPI Async)
+    </text>
+
+    <!-- 9 Agent Mini-Grid -->
+    <g transform="translate(80, 50)">
+      <rect x="0" y="0" width="85" height="30" rx="3" fill="#0D2552" stroke="#60A5FA" stroke-width="1"/>
+      <text x="42" y="19" text-anchor="middle" fill="#E2E8F0" font-size="9" font-weight="bold" class="font-mono">A1:Planner</text>
+    </g>
+    <g transform="translate(175, 50)">
+      <rect x="0" y="0" width="85" height="30" rx="3" fill="#0D2552" stroke="#60A5FA" stroke-width="1"/>
+      <text x="42" y="19" text-anchor="middle" fill="#E2E8F0" font-size="9" font-weight="bold" class="font-mono">A2:GeoVal</text>
+    </g>
+    <g transform="translate(270, 50)">
+      <rect x="0" y="0" width="85" height="30" rx="3" fill="#0D2552" stroke="#60A5FA" stroke-width="1"/>
+      <text x="42" y="19" text-anchor="middle" fill="#E2E8F0" font-size="9" font-weight="bold" class="font-mono">A3:Router</text>
+    </g>
+    <g transform="translate(365, 50)">
+      <rect x="0" y="0" width="85" height="30" rx="3" fill="#0D2552" stroke="#A855F7" stroke-width="1"/>
+      <text x="42" y="19" text-anchor="middle" fill="#F3E8FF" font-size="9" font-weight="bold" class="font-mono">A4:VQA</text>
+    </g>
+    <g transform="translate(460, 50)">
+      <rect x="0" y="0" width="85" height="30" rx="3" fill="#0D2552" stroke="#A855F7" stroke-width="1"/>
+      <text x="42" y="19" text-anchor="middle" fill="#F3E8FF" font-size="9" font-weight="bold" class="font-mono">A5:Change</text>
+    </g>
+    <g transform="translate(555, 50)">
+      <rect x="0" y="0" width="85" height="30" rx="3" fill="#0D2552" stroke="#06B6D4" stroke-width="1"/>
+      <text x="42" y="19" text-anchor="middle" fill="#CFFAFE" font-size="9" font-weight="bold" class="font-mono">A6:Ground</text>
+    </g>
+    <g transform="translate(650, 50)">
+      <rect x="0" y="0" width="85" height="30" rx="3" fill="#0D2552" stroke="#10B981" stroke-width="1"/>
+      <text x="42" y="19" text-anchor="middle" fill="#D1FAE5" font-size="9" font-weight="bold" class="font-mono">A7:Fusion</text>
+    </g>
+    <g transform="translate(745, 50)">
+      <rect x="0" y="0" width="85" height="30" rx="3" fill="#0D2552" stroke="#F59E0B" stroke-width="1"/>
+      <text x="42" y="19" text-anchor="middle" fill="#FEF3C7" font-size="9" font-weight="bold" class="font-mono">A8:Conf</text>
+    </g>
+  </g>
+
+  <!-- Connectors Tier 2 to Tier 3 -->
+  <g stroke="#818CF8" stroke-width="1.8" class="pulse-data">
+    <line x1="320" y1="415" x2="320" y2="475"/>
+    <line x1="550" y1="425" x2="550" y2="485"/>
+    <line x1="780" y1="415" x2="780" y2="475"/>
+  </g>
+
+  <!-- ================= TIER 3 (BOTTOM): SATELLITE SENSORS & DATA ================= -->
+  <g transform="translate(100, 470)" filter="url(#shadow3D)">
+    <polygon points="450,0 900,60 450,120 0,60" fill="#18133E" stroke="#8B5CF6" stroke-width="2"/>
+    <polygon points="0,60 450,120 450,140 0,80" fill="#120E2E"/>
+    <polygon points="450,120 900,60 900,80 450,140" fill="#0C0920"/>
+
+    <!-- Tier Label -->
+    <text x="450" y="45" text-anchor="middle" fill="#C084FC" font-size="13" font-weight="bold" class="font-mono">
+      TIER 3: MULTI-MODAL EARTH OBSERVATION &amp; GEOSPATIAL PLATFORMS
+    </text>
+
+    <!-- 4 Sensors on Platform -->
+    <g transform="translate(80, 50)">
+      <rect x="0" y="0" width="165" height="32" rx="4" fill="#241454" stroke="#A855F7" stroke-width="1.2"/>
+      <text x="82" y="20" text-anchor="middle" fill="#FFFFFF" font-size="10" font-weight="bold" class="font-sans">
+        ISRO RISAT / Cartosat
+      </text>
+    </g>
+    <g transform="translate(270, 50)">
+      <rect x="0" y="0" width="165" height="32" rx="4" fill="#241454" stroke="#A855F7" stroke-width="1.2"/>
+      <text x="82" y="20" text-anchor="middle" fill="#FFFFFF" font-size="10" font-weight="bold" class="font-sans">
+        Copernicus Sentinel-1 SAR
+      </text>
+    </g>
+    <g transform="translate(460, 50)">
+      <rect x="0" y="0" width="165" height="32" rx="4" fill="#241454" stroke="#06B6D4" stroke-width="1.2"/>
+      <text x="82" y="20" text-anchor="middle" fill="#FFFFFF" font-size="10" font-weight="bold" class="font-sans">
+        ESRI World Imagery (0.3m)
+      </text>
+    </g>
+    <g transform="translate(650, 50)">
+      <rect x="0" y="0" width="165" height="32" rx="4" fill="#241454" stroke="#10B981" stroke-width="1.2"/>
+      <text x="82" y="20" text-anchor="middle" fill="#FFFFFF" font-size="10" font-weight="bold" class="font-sans">
+        NASA GIBS NRT Feeds
+      </text>
+    </g>
+  </g>
+</svg>

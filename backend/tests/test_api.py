@@ -118,3 +118,22 @@ async def test_traffic_and_locations():
         assert len(r_loc.json()) >= 1
 
 
+@pytest.mark.asyncio
+async def test_agent_debate_protocol():
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        res = await client.get("/api/futuristic/debate?scenario=monsoon_flood")
+        assert res.status_code == 200
+        data = res.json()
+        assert data["consensus_reached"] is True
+        assert len(data["turns"]) == 4
+        assert data["final_confidence"] > 0.90
+        assert "Optical" in data["overruled_sensor"]
+
+        res_struct = await client.get("/api/futuristic/debate?scenario=urban_shadow")
+        assert res_struct.status_code == 200
+        data_struct = res_struct.json()
+        assert data_struct["consensus_reached"] is True
+        assert len(data_struct["turns"]) == 4
+
+

@@ -8,6 +8,10 @@
 
 <div align="center">
 
+<img src="assets/bhuvision_3d_banner.svg" alt="BHUVISION 3D Orbital Space Engine" width="100%"/>
+
+<br/>
+
 [![SIH26167](https://img.shields.io/badge/SIH%202026-Problem%20SIH26167-blue?style=for-the-badge&logo=satellite)](https://www.sih.gov.in/)
 [![ISRO](https://img.shields.io/badge/Mentorship-ISRO-orange?style=for-the-badge&logo=spacex)](https://www.isro.gov.in/)
 [![Three.js](https://img.shields.io/badge/3D%20Engine-Three.js%20WebGL-black?style=for-the-badge&logo=three.js)](https://threejs.org/)
@@ -79,6 +83,10 @@
 
 ## 🏗️ 3D Multi-Tier System Architecture
 
+<div align="center">
+  <img src="assets/architecture_3d_pipeline.svg" alt="3D Multi-Tier System Architecture Pipeline" width="100%"/>
+</div>
+
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                     BHUVISION 3D TOPOLOGY                                      │
@@ -136,6 +144,10 @@
 ---
 
 ## 🔬 9-Agent Graph-of-Thought (GoT) Workflow
+
+<div align="center">
+  <img src="assets/multi_agent_got_council.svg" alt="Multi-Agent Graph-of-Thought Deliberation Council" width="100%"/>
+</div>
 
 ```mermaid
 flowchart TD
@@ -198,6 +210,10 @@ flowchart TD
 
 ## 📡 Synthetic Aperture Radar (SAR) Physics Matrix
 
+<div align="center">
+  <img src="assets/sar_radar_physics_spectrum.svg" alt="SAR Microwave Radar Reflectance Spectrum" width="100%"/>
+</div>
+
 ```
 [MICROWAVE RADAR REFLECTANCE SPECTRUM - SENTINEL-1 C-BAND (5.405 GHz)]
 
@@ -209,6 +225,33 @@ flowchart TD
       │  [Inundated Flood]    │  [Infrastructure] │  [Forest / Crops]    │  [Concrete/Iron]│
       │  PIXELS: ULTRA DARK   │  PIXELS: DIM GRAY │  PIXELS: MID-GRAY    │  PIXELS: BRIGHT │
 ```
+
+---
+
+## 🛰️ Mission-Critical GIS & Remote Sensing Toolkit
+
+BHUVISION provides three mission-critical spatial analysis engines engineered for defense reconnaissance, disaster relief, and agricultural surveillance:
+
+### 1. Multispectral Index Engine (`GET /api/investigate/spectral/analyze`)
+Computes real-time land surface radiometric indices across multi-band Sentinel-2 / Landsat imagery:
+* **NDVI (Normalized Difference Vegetation Index):**
+  $$\text{NDVI} = \frac{\text{NIR} - \text{Red}}{\text{NIR} + \text{Red}} = \frac{B08 - B04}{B08 + B04}$$
+  *Delineates dense agricultural canopy ($> 0.5$) from stressed crops ($0.2 - 0.5$) and bare soil ($< 0.2$).*
+* **NDWI (Normalized Difference Water Index):**
+  $$\text{NDWI} = \frac{\text{Green} - \text{NIR}}{\text{Green} + \text{NIR}} = \frac{B03 - B08}{B03 + B08}$$
+  *Extracts open surface water and delineates flood inundation boundaries.*
+* **NDBI (Normalized Difference Built-up Index):**
+  $$\text{NDBI} = \frac{\text{SWIR} - \text{NIR}}{\text{SWIR} + \text{NIR}}$$
+  *Isolates concrete, asphalt, and urban density.*
+
+### 2. WGS-84 Geodesic Polygonal Measurement (`POST /api/investigate/measure/area`)
+Computes exact spherical-excess polygonal surface area on the WGS-84 reference ellipsoid ($a = 6,378,137\text{ m}$):
+* **Outputs:** Surface Area in Hectares ($Ha$), Square Kilometers ($km^2$), Acres ($ac$), and Perimeter length ($km$).
+* **Operational Impact:** Disaster commanders can trace inundated areas directly on the cockpit map to measure flooded farmland without manual GIS post-processing.
+
+### 3. RFC 7946 Standard GeoJSON Export (`GET /api/investigate/{id}/geojson`)
+* Exports the complete 9-agent investigation dossier as an open RFC 7946 compliant GeoJSON FeatureCollection.
+* Seamlessly importable into **ISRO Bhuvan**, **QGIS**, **ArcGIS Pro**, **Google Earth Pro**, and military Common Operating Picture (COP) systems.
 
 ---
 
@@ -250,7 +293,7 @@ cd "g:\Satquery Ai\backend"
 ### 3. Run Automated Tests
 ```powershell
 & "C:\Program Files\Python313\python.exe" -m pytest tests/ -v
-# Result: 11 passed in 1.78s (100% green)
+# Result: 16 passed in 2.50s (100% green across all 9 agents & spatial API endpoints)
 ```
 
 ---
