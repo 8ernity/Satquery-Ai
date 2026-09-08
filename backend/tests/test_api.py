@@ -56,6 +56,65 @@ async def test_investigate_demo():
         assert res["status"] == "complete"
         assert res["plan"]["task_type"] == "change_detection"
         assert len(res["trace"]["events"]) > 0
-        assert res["confidence"] is not None
         assert res["confidence"]["is_fabricated"] is False
+
+
+@pytest.mark.asyncio
+async def test_spectral_analysis():
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        response = await client.get("/api/investigate/spectral/analyze?lat=12.9716&lon=77.5946&index_type=ndvi")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["status"] == "success"
+        assert data["index_type"] == "NDVI"
+        assert "mean_value" in data
+        assert "interpretation" in data
+
+
+@pytest.mark.asyncio
+async def test_polygon_measurement():
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        payload = {
+            "coordinates": [
+                [12.97, 77.59],
+                [12.98, 77.59],
+                [12.98, 77.60],
+                [12.97, 77.60]
+            ]
+        }
+        response = await client.post("/api/investigate/measure/area", json=payload)
+        assert response.status_code == 200
+        data = response.json()
+        assert data["status"] == "success"
+        assert data["vertex_count"] == 4
+        assert data["area_hectares"] > 0
+        assert data["perimeter_km"] > 0
+
+
+@pytest.mark.asyncio
+async def test_geojson_export():
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        response = await client.get("/api/investigate/inv-test/geojson")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["type"] == "FeatureCollection"
+        assert len(data["features"]) > 0
+        assert data["metadata"]["system"] == "BHUVISION Earth Intelligence (SIH26167)"
+
+
+@pytest.mark.asyncio
+async def test_traffic_and_locations():
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        r_trf = await client.get("/api/traffic/flow?lat=12.9716&lon=77.5946")
+        assert r_trf.status_code == 200
+        assert len(r_trf.json()["segments"]) >= 1
+
+        r_loc = await client.get("/api/locations/search?q=Bengaluru")
+        assert r_loc.status_code == 200
+        assert len(r_loc.json()) >= 1
+
 

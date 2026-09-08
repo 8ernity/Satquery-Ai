@@ -18,6 +18,9 @@ from .api.health import router as health_router
 from .api.imagery import router as imagery_router
 from .api.investigation import router as investigation_router
 from .api.scenarios import router as scenarios_router
+from .api.locations import router as locations_router
+from .api.traffic import router as traffic_router
+from .api.futuristic import router as futuristic_router
 from .core.config import settings
 from .core.logging import get_logger, setup_logging
 
@@ -72,6 +75,9 @@ app.include_router(health_router, prefix="/api")
 app.include_router(imagery_router, prefix="/api")
 app.include_router(investigation_router, prefix="/api")
 app.include_router(scenarios_router, prefix="/api")
+app.include_router(locations_router, prefix="/api")
+app.include_router(traffic_router, prefix="/api")
+app.include_router(futuristic_router, prefix="/api")
 
 
 @app.get("/", tags=["Root"])
