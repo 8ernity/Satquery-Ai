@@ -22,6 +22,7 @@ from .api.locations import router as locations_router
 from .api.traffic import router as traffic_router
 from .api.futuristic import router as futuristic_router
 from .api.nasa_tile import router as nasa_tile_router
+from .api.auth import router as auth_router
 from .core.config import settings
 from .core.logging import get_logger, setup_logging
 
@@ -71,6 +72,11 @@ demo_path.mkdir(parents=True, exist_ok=True)
 app.mount("/static/uploads", StaticFiles(directory=str(upload_path)), name="uploads")
 app.mount("/static/demo", StaticFiles(directory=str(demo_path)), name="demo")
 
+# Mount assets directory for 3D SVGs and PWA icons
+assets_dir = Path(__file__).resolve().parents[2] / "assets"
+if assets_dir.exists():
+    app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
+
 # Include API Routers
 app.include_router(health_router, prefix="/api")
 app.include_router(imagery_router, prefix="/api")
@@ -80,6 +86,7 @@ app.include_router(locations_router, prefix="/api")
 app.include_router(traffic_router, prefix="/api")
 app.include_router(futuristic_router, prefix="/api")
 app.include_router(nasa_tile_router, prefix="/api")
+app.include_router(auth_router, prefix="/api")
 
 
 @app.get("/", tags=["Root"])
@@ -98,6 +105,15 @@ async def get_root():
         "status": "online",
         "agents": 9,
     }
+
+
+@app.get("/manifest.json", tags=["PWA"])
+async def get_manifest():
+    """Serves the Progressive Web App (PWA) manifest."""
+    manifest_file = Path(__file__).resolve().parents[2] / "manifest.json"
+    if manifest_file.exists():
+        return FileResponse(manifest_file, media_type="application/manifest+json")
+    return {"name": "BHUVISION", "short_name": "BHUVISION"}
 
 
 @app.get("/app", tags=["Frontend Application"])

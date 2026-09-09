@@ -14,7 +14,7 @@
 
 [![SIH26167](https://img.shields.io/badge/SIH%202026-Problem%20SIH26167-blue?style=for-the-badge&logo=satellite)](https://www.sih.gov.in/)
 [![ISRO](https://img.shields.io/badge/Mentorship-ISRO-orange?style=for-the-badge&logo=spacex)](https://www.isro.gov.in/)
-[![Tests](https://img.shields.io/badge/Pytest%20v9.1-17%2F17%20Passing%20(100%25)-brightgreen?style=for-the-badge&logo=pytest)](backend/tests/)
+[![Tests](https://img.shields.io/badge/Pytest%20v9.1-43%2F43%20Passing%20(100%25)-brightgreen?style=for-the-badge&logo=pytest)](backend/tests/)
 [![Three.js](https://img.shields.io/badge/3D%20Engine-Three.js%20WebGL-black?style=for-the-badge&logo=three.js)](https://threejs.org/)
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI%20Async-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 [![Python 3.13](https://img.shields.io/badge/Python-3.13-3776AB?style=for-the-badge&logo=python)](https://python.org/)
@@ -23,7 +23,7 @@
 ### *"Ask the Earth. AI decides how to investigate it."*
 **A defense-grade spatial intelligence platform that looks through monsoon clouds using Synthetic Aperture Radar (SAR), tracks sub-meter urban transformation, and proves every answer through a 9-agent autonomous scientific council.**
 
-[🚀 Open Surveillance Cockpit](http://127.0.0.1:8000/app) • [📑 Interactive OpenAPI Swagger](http://127.0.0.1:8000/docs) • [📐 Deep System Specification](docs/SYSTEM_SPECIFICATION.md) • [🔑 API Keys Guide](docs/API_KEYS_GUIDE.md)
+[🚀 Open Surveillance Cockpit](http://127.0.0.1:8000/app) • [📑 Interactive OpenAPI Swagger](http://127.0.0.1:8000/docs) • [🌐 Production Deployment & Auth Guide](docs/PRODUCTION_DEPLOYMENT_GUIDE.md) • [🔑 API Keys Guide](docs/API_KEYS_GUIDE.md)
 
 </div>
 
@@ -368,7 +368,7 @@ cd "g:\Satquery Ai\backend"
 ### 3. Run Automated Tests
 ```powershell
 & "C:\Program Files\Python313\python.exe" -m pytest backend/tests -v
-# Result: 17 passed in 2.06s (100% green across all 9 agents, spectral ratios & spatial API endpoints)
+# Result: 43 passed in 2.17s (100% green across all 9 agents, spatial algorithms, and 3D SVG asset XML validators)
 ```
 
 ---

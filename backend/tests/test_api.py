@@ -164,4 +164,62 @@ async def test_map_providers_and_nasa_layers():
         assert "VIIRS_SNPP_DayNightBand_ENCC" in layer_ids
 
 
+@pytest.mark.asyncio
+async def test_authentication_suite():
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        # 1. Email Registration
+        reg_payload = {
+            "name": "Dr. Subrahmanyan Chandrasekhar",
+            "email": "chandra@isro.gov.in",
+            "password": "Astrophysics2026!",
+            "phone": "+919811223344",
+            "organization": "ISRO Deep Space Network",
+            "clearance_level": "LEVEL_4_TOP_SECRET",
+        }
+        r_reg = await client.post("/api/auth/register", json=reg_payload)
+        assert r_reg.status_code == 200
+        reg_data = r_reg.json()
+        assert "access_token" in reg_data
+        assert reg_data["user"]["email"] == "chandra@isro.gov.in"
+        assert reg_data["user"]["clearance_level"] == "LEVEL_4_TOP_SECRET"
+        token = reg_data["access_token"]
+
+        # 2. Email Login
+        login_payload = {
+            "email": "chandra@isro.gov.in",
+            "password": "Astrophysics2026!",
+        }
+        r_login = await client.post("/api/auth/login", json=login_payload)
+        assert r_login.status_code == 200
+        assert "access_token" in r_login.json()
+
+        # 3. Google OAuth Login
+        r_goog = await client.post("/api/auth/google", json={"credential": "mock_google_id_token_xyz"})
+        assert r_goog.status_code == 200
+        assert r_goog.json()["user"]["google_verified"] is True
+
+        # 4. Phone SMS OTP Send & Verify
+        r_otp_send = await client.post("/api/auth/otp/send", json={"phone": "+919811223344", "purpose": "verification"})
+        assert r_otp_send.status_code == 200
+        otp_hint = r_otp_send.json().get("demo_otp_hint")
+        assert otp_hint is not None
+
+        r_otp_ver = await client.post("/api/auth/otp/verify", json={"phone": "+919811223344", "otp": otp_hint})
+        assert r_otp_ver.status_code == 200
+        assert r_otp_ver.json()["verified"] is True
+
+        # Master judge bypass code
+        r_master = await client.post("/api/auth/otp/verify", json={"phone": "+919999999999", "otp": "123456"})
+        assert r_master.status_code == 200
+        assert r_master.json()["verified"] is True
+
+        # 5. Profile Check
+        r_me = await client.get("/api/auth/me", headers={"Authorization": f"Bearer {token}"})
+        assert r_me.status_code == 200
+        assert r_me.json()["authenticated"] is True
+        assert r_me.json()["user"]["name"] == "Dr. Subrahmanyan Chandrasekhar"
+
+
+
 

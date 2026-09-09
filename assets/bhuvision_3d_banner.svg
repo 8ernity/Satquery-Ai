@@ -178,7 +178,7 @@
 
     <line x1="0" y1="120" x2="520" y2="120" stroke="url(#cyanFade)" stroke-width="2"/>
     <text x="0" y="145" fill="#38BDF8" font-size="13" font-weight="700" font-style="italic" class="heading-font">
-      &ldquo;Ask the Earth. AI decides how to investigate it.&rdquo;
+      &#8220;Ask the Earth. AI decides how to investigate it.&#8221;
     </text>
 
     <!-- Badges -->
