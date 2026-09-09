@@ -137,3 +137,31 @@ async def test_agent_debate_protocol():
         assert len(data_struct["turns"]) == 4
 
 
+@pytest.mark.asyncio
+async def test_map_providers_and_nasa_layers():
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        # Test 3-map provider catalog
+        r_prov = await client.get("/api/locations/providers")
+        assert r_prov.status_code == 200
+        prov_data = r_prov.json()
+        assert "api_keys_configured" in prov_data
+        assert "google_maps" in prov_data["api_keys_configured"]
+        assert "maptiler" in prov_data["api_keys_configured"]
+        assert "nasa_earthdata" in prov_data["api_keys_configured"]
+        provider_ids = [p["id"] for p in prov_data["providers"]]
+        assert "google_maps" in provider_ids
+        assert "maptiler" in provider_ids
+        assert "nasa_gibs" in provider_ids
+
+        # Test NASA GIBS layers catalog
+        r_nasa = await client.get("/api/nasa-tile/layers")
+        assert r_nasa.status_code == 200
+        nasa_data = r_nasa.json()
+        assert len(nasa_data["layers"]) >= 5
+        layer_ids = [l["id"] for l in nasa_data["layers"]]
+        assert "MODIS_Terra_CorrectedReflectance_TrueColor" in layer_ids
+        assert "VIIRS_SNPP_DayNightBand_ENCC" in layer_ids
+
+
+

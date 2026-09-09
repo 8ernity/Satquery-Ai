@@ -42,12 +42,17 @@
     @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.6); opacity: 0.3; } }
     @keyframes dash { to { stroke-dashoffset: -100; } }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-    .orbit-1 { transform-origin: 920px 240px; animation: orbitA 24s linear infinite; }
-    .orbit-2 { transform-origin: 920px 240px; animation: orbitB 36s linear infinite; }
-    .radar-sweep { transform-origin: 920px 240px; animation: sweep 6s linear infinite; }
+    @keyframes atmosBreathe { 0%, 100% { opacity: 0.8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.02); } }
+    @keyframes floatBanner { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-3px); } }
+
+    .orbit-1 { transform-origin: 920px 240px; transform-box: view-box; animation: orbitA 24s linear infinite; will-change: transform; }
+    .orbit-2 { transform-origin: 920px 240px; transform-box: view-box; animation: orbitB 36s linear infinite; will-change: transform; }
+    .radar-sweep { transform-origin: 920px 240px; transform-box: view-box; animation: sweep 6s linear infinite; will-change: transform; }
     .beacon-pulse { transform-origin: center; animation: pulse 2s ease-in-out infinite; }
     .dash-line { stroke-dasharray: 6, 6; animation: dash 3s linear infinite; }
     .blink-dot { animation: blink 1.5s ease-in-out infinite; }
+    .atmos-anim { transform-origin: 920px 240px; transform-box: view-box; animation: atmosBreathe 4s ease-in-out infinite; }
+    .float-ui { animation: floatBanner 5s ease-in-out infinite; }
     .code-font { font-family: 'JetBrains Mono', monospace, Courier; }
     .heading-font { font-family: 'Space Grotesk', -apple-system, sans-serif; }
   </style>
@@ -130,7 +135,7 @@
       <text x="-45" y="3" fill="#BFDBFE" font-size="7.5" font-weight="bold" class="code-font">SAC [AHM]</text>
     </g>
 
-    <circle cx="920" cy="240" r="150" fill="url(#atmosHalo)"/>
+    <circle cx="920" cy="240" r="150" fill="url(#atmosHalo)" class="atmos-anim"/>
 
     <!-- Radar Sweep -->
     <g class="radar-sweep">
@@ -153,7 +158,7 @@
   </g>
 
   <!-- Left Branding & Badges -->
-  <g transform="translate(70, 75)">
+  <g transform="translate(70, 75)" class="float-ui">
     <rect x="0" y="0" width="285" height="24" rx="5" fill="#0B132B" stroke="#0284C7" stroke-width="1"/>
     <circle cx="12" cy="12" r="4" fill="#06B6D4" class="blink-dot"/>
     <text x="24" y="16" fill="#38BDF8" font-size="10" font-weight="bold" class="code-font">

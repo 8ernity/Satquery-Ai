@@ -14,7 +14,7 @@
 
 [![SIH26167](https://img.shields.io/badge/SIH%202026-Problem%20SIH26167-blue?style=for-the-badge&logo=satellite)](https://www.sih.gov.in/)
 [![ISRO](https://img.shields.io/badge/Mentorship-ISRO-orange?style=for-the-badge&logo=spacex)](https://www.isro.gov.in/)
-[![Tests](https://img.shields.io/badge/Pytest%20v9.1-16%2F16%20Passing%20(100%25)-brightgreen?style=for-the-badge&logo=pytest)](backend/tests/)
+[![Tests](https://img.shields.io/badge/Pytest%20v9.1-17%2F17%20Passing%20(100%25)-brightgreen?style=for-the-badge&logo=pytest)](backend/tests/)
 [![Three.js](https://img.shields.io/badge/3D%20Engine-Three.js%20WebGL-black?style=for-the-badge&logo=three.js)](https://threejs.org/)
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI%20Async-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 [![Python 3.13](https://img.shields.io/badge/Python-3.13-3776AB?style=for-the-badge&logo=python)](https://python.org/)
@@ -312,21 +312,39 @@ $$\text{Area} = \frac{1}{2} R^2 \cdot \left| \sum_{i=1}^{n} (\lambda_{i+1} - \la
 
 ---
 
-## 🔑 Phase 2: Production API Keys Guide
+## 🔑 Operational API Keys & Multi-Model Routing
 
-BHUVISION is built with an **Enterprise Zero-Key Architecture**: it runs instantly out-of-the-box using public ESRI World Imagery and NASA GIBS without needing any API keys. 
+BHUVISION is powered by **three mission-grade map API platforms** alongside **OpenRouter multi-model LLM routing** with automated fallback to OmniRoute and FreeLLMAPI:
 
-To upgrade to higher commercial capabilities (live road traffic, photorealistic 3D building tiles, raw COG rasters), configure the following free-tier keys in your `.env` or the in-app **API Keys Modal**:
+### The Three Operational Map API Keys (Active in Cockpit & Backend)
 
-| Provider & API | What It Unlocks in BHUVISION | Free Tier Allowance | Where to Get It (Official Console) |
+| Map API Provider | Role in BHUVISION | Configuration Key | Capabilities & Status |
 | :--- | :--- | :--- | :--- |
-| **Google Maps Platform**<br/>*(Maps JS, Places, Routes, 3D Tiles)* | Live arterial road congestion vectors, emergency evacuation alternate corridors, global landmark geocoding. | **\$200 free credit every month** (enough for thousands of live queries) | [console.cloud.google.com](https://console.cloud.google.com/google/maps-apis) |
-| **Mapbox GL**<br/>*(Terrain-DEM, Vector Basemaps)* | 3D terrain elevation mesh, hill-shading elevation contours in mountain passes (Kedarnath, Western Ghats). | **50,000 free map loads / month** | [account.mapbox.com](https://account.mapbox.com/) |
-| **Copernicus CDSE / Sentinel Hub**<br/>*(Sentinel-1 SAR, Sentinel-2 MSI)* | Raw, uncompressed 16-bit SAR Complex (SLC) and multi-spectral infrared (NDVI) bands direct from orbit. | **Free Open Research Tier** for Indian students and hackathon developers | [dataspace.copernicus.eu](https://dataspace.copernicus.eu/) |
-| **NASA Earthdata / GIBS**<br/>*(Global Imagery Browse Services)* | Near-real-time global daily composites, thermal fire anomalies (VIIRS), flood extent layers. | **100% Free Public Access** | [urs.earthdata.nasa.gov](https://urs.earthdata.nasa.gov/) |
-| **OmniRoute / FreeLLMAPI**<br/>*(AI Gateway Router)* | Multi-model VQA synthesis (Gemini 1.5/2.0 via Antigravity OAuth or 34 open-source LLM backends). | **Free Local Pool** (~7.4B tokens/month pool) | Running locally on port `20128` or `3001` |
+| **1. Google Maps Platform** | 2D/3D Photorealistic Satellite Hybrid, dynamic vector overlays, road traffic networks | `GOOGLE_MAPS_API_KEY` | ✅ **Active** — Dynamic SDK integration, 45° 3D tilt, hybrid satellite+road layers |
+| **2. MapTiler Cloud** | High-resolution satellite tiles, Terrain-RGB 3D elevation mesh, topographic contours | `MAPTILER_API_KEY` | ✅ **Active** — 0.5m GSD imagery, Terrain-RGB 3D elevation, TopoJSON boundary support |
+| **3. NASA Earthdata / GIBS** | Near-real-time authenticated daily passes (MODIS Terra/Aqua, VIIRS Day/Night, NDVI, Aerosols) | `NASA_EARTHDATA_TOKEN` | ✅ **Active** — Bearer JWT authenticated proxy (`/api/nasa-tile`), 5 spectral layers |
 
-> 📖 **Full Step-by-Step Acquisition Manual:** See [docs/API_KEYS_GUIDE.md](docs/API_KEYS_GUIDE.md) for screenshots, direct registration URLs, and `.env` sample configuration.
+### 🤖 9-Agent Cognitive Council — Dedicated OpenRouter Model Lineup
+
+Every agent in the council is mapped to a state-of-the-art model specialized for its domain:
+
+| Agent ID | Agent Role | Assigned Model (OpenRouter ID) | Reasoning & Specialization |
+| :--- | :--- | :--- | :--- |
+| **Agent 1** | **Query Planner** | `meta-llama/llama-3.3-70b-instruct` | Intent classification, sub-task graph generation, zero-shot tool routing |
+| **Agent 2** | **Geo Validator** | `qwen/qwen-2.5-72b-instruct` | EPSG CRS transformation, bounding box sanity checks, topological containment |
+| **Agent 3** | **Sensor Router** | `mistralai/mistral-small-3.2-24b-instruct:free` | Atmospheric cloud optical-depth analysis, optical vs. SAR microwave sensor triage |
+| **Agent 4** | **RS-VQA Vision** | `google/gemini-2.5-flash` | Multimodal sub-meter feature identification, building morphology, infrastructure VQA |
+| **Agent 5** | **SAR & Change** | `deepseek/deepseek-r1-0528:free` | Bi-temporal backscatter differencing, Otsu flood water segmentation, change analysis |
+| **Agent 6** | **Visual Grounding** | `meta-llama/llama-3.3-70b-instruct` | Spatial bounding coordinates extraction, GeoJSON visual overlay construction |
+| **Agent 7** | **Evidence Fusion** | `deepseek/deepseek-r1:free` | Cross-sensor contradiction detection, debate consensus arbitration |
+| **Agent 8** | **Confidence Assessment** | `google/gemini-2.5-flash` | Logits calibration, empirical uncertainty scoring, anti-hallucination guardrails |
+| **Agent 9** | **Audit & Trace** | `google/gemini-2.5-flash-lite` | Millisecond-precision flight log generation, cryptographic execution trace verification |
+
+> 🔄 **Resilient Multi-Gateway Fallback Chain:**  
+> `OpenRouter (Primary)` $\longrightarrow$ `OmniRoute :20128 (Antigravity OAuth Gemini)` $\longrightarrow$ `FreeLLMAPI :3001 (7.4B token pool)`
+
+> 🗺️ **TopoJSON Boundary Integration:**  
+> Integrated TopoJSON client rendering official administrative boundaries over any active tile provider (Google Maps, MapTiler, NASA GIBS, ESRI, SAR) with single-click toggle.
 
 ---
 

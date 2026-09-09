@@ -50,6 +50,47 @@
     </filter>
 
     <style>
+      @keyframes autoSliderWipe {
+        0% { transform: translateX(-160px); }
+        50% { transform: translateX(160px); }
+        100% { transform: translateX(-160px); }
+      }
+      @keyframes trafficFlow {
+        to { stroke-dashoffset: -48; }
+      }
+      @keyframes prismBounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+      }
+      @keyframes aoiPulse {
+        0%, 100% { stroke-opacity: 0.9; fill-opacity: 0.2; }
+        50% { stroke-opacity: 0.4; fill-opacity: 0.08; }
+      }
+      @keyframes cardSway {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-3px); }
+      }
+
+      .slider-sweeper {
+        animation: autoSliderWipe 8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+        will-change: transform;
+      }
+      .traffic-active {
+        animation: trafficFlow 1.6s linear infinite;
+      }
+      .prism-tower-1 {
+        animation: prismBounce 4s ease-in-out infinite;
+      }
+      .prism-tower-2 {
+        animation: prismBounce 4s ease-in-out 1.2s infinite;
+      }
+      .aoi-boundary {
+        animation: aoiPulse 3s ease-in-out infinite;
+      }
+      .card-float {
+        animation: cardSway 6s ease-in-out infinite;
+      }
+
       .font-mono { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
       .font-space { font-family: 'Space Grotesk', -apple-system, sans-serif; }
     </style>
@@ -59,14 +100,14 @@
   <rect width="1600" height="900" fill="url(#cockpitBg)"/>
 
   <!-- Top Title Header Block -->
-  <g transform="translate(80, 45)" filter="url(#boxShadow)">
-    <rect x="0" y="0" width="680" height="80" rx="12" fill="#060B18" fill-opacity="0.94" stroke="#1F2937" stroke-width="1.5"/>
+  <g transform="translate(80, 45)" filter="url(#boxShadow)" class="card-float">
+    <rect x="0" y="0" width="700" height="80" rx="12" fill="#060B18" fill-opacity="0.94" stroke="#1F2937" stroke-width="1.5"/>
     <rect x="14" y="14" width="6" height="52" rx="3" fill="#06B6D4"/>
     <text x="34" y="38" fill="#FFFFFF" font-size="16" font-weight="bold" class="font-space">
       DUAL-DIMENSION 2D/3D SURVEILLANCE COCKPIT ARCHITECTURE
     </text>
     <text x="34" y="60" fill="#38BDF8" font-size="11" class="font-mono">
-      0° Nadir Sub-meter Inspection ◄► 75° Oblique Tilt with Extruded Prism Terrain
+      0° Nadir Sub-meter Inspection ◄► 75° Oblique Tilt • Real-Time Automated Split Slider
     </text>
   </g>
 
@@ -110,7 +151,7 @@
     <!-- ================= RIGHT HALF: T2 LIVE OBSERVATION (NEW STRUCTURES) ================= -->
     <g id="t2Observation">
       <!-- 3D Extruded Building Prism 1 (Commercial Tower: Height 80m) -->
-      <g transform="translate(140, 20)">
+      <g transform="translate(140, 20)" class="prism-tower-1">
         <!-- Front Face -->
         <polygon points="-35,0 35,0 35,-90 -35,-90" fill="url(#prismFront)" stroke="#22D3EE" stroke-width="1.5"/>
         <!-- Right Side Face -->
@@ -132,7 +173,7 @@
       </g>
 
       <!-- 3D Extruded Building Prism 2 (Residential Complex: Height 45m) -->
-      <g transform="translate(280, -30)">
+      <g transform="translate(280, -30)" class="prism-tower-2">
         <!-- Front Face -->
         <polygon points="-25,0 25,0 25,-55 -25,-55" fill="url(#prismFront)" stroke="#22D3EE" stroke-width="1.5"/>
         <!-- Right Side Face -->
@@ -149,7 +190,7 @@
 
       <!-- AI Verified Visual Grounding Bounding Box -->
       <g transform="translate(180, 45)">
-        <polygon points="-90,-25 180,-25 140,55 -130,55" fill="rgba(239, 68, 68, 0.2)" stroke="#EF4444" stroke-width="2.5" stroke-dasharray="6,4" filter="url(#neonGlow)"/>
+        <polygon points="-90,-25 180,-25 140,55 -130,55" fill="rgba(239, 68, 68, 0.2)" stroke="#EF4444" stroke-width="2.5" stroke-dasharray="6,4" filter="url(#neonGlow)" class="aoi-boundary"/>
         <rect x="-130" y="55" width="220" height="24" rx="4" fill="#EF4444"/>
         <text x="-120" y="71" fill="#FFFFFF" font-size="10" font-weight="bold" class="font-mono">
           AI GROUNDING AOI (14.2% EXPANSION)
@@ -160,11 +201,11 @@
     <!-- ================= LIVE ARTERIAL TRAFFIC CONGESTION VECTORS ================= -->
     <g id="trafficVectors" stroke-linecap="round">
       <!-- Free Flow Corridor (Green) -->
-      <line x1="-520" y1="90" x2="-120" y2="10" stroke="#10B981" stroke-width="5" stroke-dasharray="8,4"/>
+      <line x1="-520" y1="90" x2="-120" y2="10" stroke="#10B981" stroke-width="5" stroke-dasharray="12,6" class="traffic-active"/>
       <text x="-480" y="120" fill="#34D399" font-size="10" font-weight="bold" class="font-mono">NH-44 BYPASS: 76 km/h (FREE FLOW)</text>
 
       <!-- Moderate Arterial Corridor (Amber) -->
-      <line x1="-120" y1="10" x2="160" y2="-60" stroke="#F59E0B" stroke-width="5"/>
+      <line x1="-120" y1="10" x2="160" y2="-60" stroke="#F59E0B" stroke-width="5" stroke-dasharray="10,6" class="traffic-active"/>
       <text x="-80" y="32" fill="#FCD34D" font-size="9" font-weight="bold" class="font-mono">OUTER RING: 42 km/h</text>
 
       <!-- Congested Bottleneck Corridor (Red) -->
@@ -172,14 +213,16 @@
       <text x="240" y="-85" fill="#F87171" font-size="10" font-weight="bold" class="font-mono">RIVER CROSSING: 14 km/h (CONGESTED)</text>
     </g>
 
-    <!-- ================= BI-TEMPORAL SWIPE SLIDER DIVIDER ================= -->
-    <!-- Center Dividing Vertical Neon Line -->
-    <line x1="0" y1="-190" x2="0" y2="170" stroke="url(#swipeBeam)" stroke-width="3.5" filter="url(#neonGlow)"/>
-    
-    <!-- Center Interactive Handle -->
-    <circle cx="0" cy="-10" r="22" fill="#06B6D4" stroke="#FFFFFF" stroke-width="2.5" filter="url(#neonGlow)"/>
-    <!-- Double Horizontal Arrows -->
-    <path d="M -8 -10 L -3 -15 L -3 -5 Z M 8 -10 L 3 -15 L 3 -5 Z" fill="#000000"/>
+    <!-- ================= BI-TEMPORAL AUTOMATED SWIPE SLIDER ================= -->
+    <g class="slider-sweeper">
+      <!-- Dividing Vertical Neon Line -->
+      <line x1="0" y1="-190" x2="0" y2="170" stroke="url(#swipeBeam)" stroke-width="3.5" filter="url(#neonGlow)"/>
+      
+      <!-- Interactive Handle -->
+      <circle cx="0" cy="-10" r="22" fill="#06B6D4" stroke="#FFFFFF" stroke-width="2.5" filter="url(#neonGlow)"/>
+      <!-- Double Horizontal Arrows -->
+      <path d="M -8 -10 L -3 -15 L -3 -5 Z M 8 -10 L 3 -15 L 3 -5 Z" fill="#000000"/>
+    </g>
 
     <!-- Temporal Badge: Pre-Event (Left) -->
     <g transform="translate(-240, -165)">
@@ -200,65 +243,46 @@
     </g>
   </g>
 
-  <!-- ================= TACTICAL HUD BOTTOM TELEMETRY CARDS ================= -->
+  <!-- ================= 3D CONTROLS & FLIGHT TELEMETRY HUD ================= -->
 
-  <!-- Card 1: 3D Camera Gimbal Telemetry -->
-  <g transform="translate(80, 720)" filter="url(#boxShadow)">
-    <rect x="0" y="0" width="440" height="135" rx="10" fill="#060B18" fill-opacity="0.94" stroke="#1F2937" stroke-width="1.5"/>
-    <text x="20" y="28" fill="#38BDF8" font-size="11" font-weight="bold" class="font-mono">3D CAMERA GIMBAL SPECIFICATIONS</text>
-    
-    <g transform="translate(20, 50)" font-size="10" class="font-mono">
-      <text x="0" y="0" fill="#94A3B8">Pitch Inclination:</text>
-      <text x="180" y="0" fill="#FFFFFF" font-weight="bold">45.0° Oblique (Range: 0°-75°)</text>
+  <!-- Left: Tilt / Oblique Angle Controller Widget -->
+  <g transform="translate(80, 715)" filter="url(#boxShadow)" class="card-float">
+    <rect x="0" y="0" width="380" height="140" rx="10" fill="#060B18" fill-opacity="0.94" stroke="#1F2937" stroke-width="1.5"/>
+    <text x="20" y="28" fill="#38BDF8" font-size="11" font-weight="bold" class="font-mono">3D PERSPECTIVE GIMBAL</text>
 
-      <text x="0" y="24" fill="#94A3B8">Yaw Heading Azimuth:</text>
-      <text x="180" y="24" fill="#38BDF8" font-weight="bold">+15.0° True North Orbit</text>
-
-      <text x="0" y="48" fill="#94A3B8">Perspective Field of View:</text>
-      <text x="180" y="48" fill="#A78BFA" font-weight="bold">1200px Dynamic Frustum</text>
-
-      <text x="0" y="72" fill="#94A3B8">GSD Resolution at Nadir:</text>
-      <text x="180" y="72" fill="#34D399" font-weight="bold">0.3m/px Sub-Meter Ground Truth</text>
+    <!-- Arc Dial Indicator -->
+    <g transform="translate(70, 85)">
+      <path d="M -45 0 A 45 45 0 0 1 45 0" fill="none" stroke="#1F2937" stroke-width="6" stroke-linecap="round"/>
+      <path d="M -45 0 A 45 45 0 0 1 25 -37" fill="none" stroke="#06B6D4" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="25" cy="-37" r="6" fill="#FFFFFF" stroke="#06B6D4" stroke-width="2"/>
     </g>
+    <text x="140" y="65" fill="#E2E8F0" font-size="10" class="font-mono">PITCH TILT:</text>
+    <text x="230" y="65" fill="#38BDF8" font-size="12" font-weight="bold" class="font-mono">75.0° OBLIQUE</text>
+
+    <text x="140" y="88" fill="#E2E8F0" font-size="10" class="font-mono">YAW HEADING:</text>
+    <text x="230" y="88" fill="#F59E0B" font-size="12" font-weight="bold" class="font-mono">032° NE</text>
+
+    <text x="140" y="111" fill="#E2E8F0" font-size="10" class="font-mono">ALTITUDE GSD:</text>
+    <text x="230" y="111" fill="#10B981" font-size="12" font-weight="bold" class="font-mono">0.30m / PIXEL</text>
   </g>
 
-  <!-- Card 2: Geodesic Shoelace Measurement -->
-  <g transform="translate(580, 720)" filter="url(#boxShadow)">
-    <rect x="0" y="0" width="440" height="135" rx="10" fill="#060B18" fill-opacity="0.94" stroke="#1F2937" stroke-width="1.5"/>
-    <text x="20" y="28" fill="#10B981" font-size="11" font-weight="bold" class="font-mono">GEODESIC MEASUREMENT ENGINE (WGS-84)</text>
+  <!-- Right: Evacuation Road Speed Diagnostics -->
+  <g transform="translate(1140, 715)" filter="url(#boxShadow)" class="card-float">
+    <rect x="0" y="0" width="380" height="140" rx="10" fill="#060B18" fill-opacity="0.94" stroke="#1F2937" stroke-width="1.5"/>
+    <text x="20" y="28" fill="#10B981" font-size="11" font-weight="bold" class="font-mono">EMERGENCY EVACUATION ESCAPE</text>
 
-    <g transform="translate(20, 50)" font-size="10" class="font-mono">
-      <text x="0" y="0" fill="#94A3B8">Delineated Surface Area:</text>
-      <text x="180" y="0" fill="#34D399" font-weight="bold">420.00 Ha (1,037.84 Acres)</text>
+    <g transform="translate(20, 48)">
+      <circle cx="6" cy="6" r="5" fill="#10B981"/>
+      <text x="22" y="10" fill="#E2E8F0" font-size="10" class="font-mono">Route 1 (NH-44 North):</text>
+      <text x="200" y="10" fill="#34D399" font-size="10" font-weight="bold" class="font-mono">CLEAR // DRY CORRIDOR</text>
 
-      <text x="0" y="24" fill="#94A3B8">Metric Square Metric:</text>
-      <text x="180" y="24" fill="#FFFFFF" font-weight="bold">4.2000 km² (4,200,000 m²)</text>
+      <circle cx="6" cy="28" r="5" fill="#F59E0B"/>
+      <text x="22" y="32" fill="#E2E8F0" font-size="10" class="font-mono">Route 2 (Bypass South):</text>
+      <text x="200" y="32" fill="#FCD34D" font-size="10" font-weight="bold" class="font-mono">MODERATE CHOKE</text>
 
-      <text x="0" y="48" fill="#94A3B8">Bounding Perimeter Length:</text>
-      <text x="180" y="48" fill="#6EE7B7" font-weight="bold">8.450 km Closed Polyline</text>
-
-      <text x="0" y="72" fill="#94A3B8">Mathematical Formulation:</text>
-      <text x="180" y="72" fill="#38BDF8" font-weight="bold">Spherical Shoelace Algorithm</text>
-    </g>
-  </g>
-
-  <!-- Card 3: Disaster Evacuation Corridor -->
-  <g transform="translate(1080, 720)" filter="url(#boxShadow)">
-    <rect x="0" y="0" width="440" height="135" rx="10" fill="#060E1A" fill-opacity="0.94" stroke="#1F2937" stroke-width="1.5"/>
-    <text x="20" y="28" fill="#F59E0B" font-size="11" font-weight="bold" class="font-mono">LIVE EVACUATION &amp; TRAFFIC VECTORS</text>
-
-    <g transform="translate(20, 50)" font-size="10" class="font-mono">
-      <text x="0" y="0" fill="#94A3B8">Active Monitored Corridors:</text>
-      <text x="180" y="0" fill="#FFFFFF" font-weight="bold">5 Strategic Arterials</text>
-
-      <text x="0" y="24" fill="#94A3B8">Flooded / Blocked Corridors:</text>
-      <text x="180" y="24" fill="#F87171" font-weight="bold">1 Choke Point Detected</text>
-
-      <text x="0" y="48" fill="#94A3B8">Recommended Escape Route:</text>
-      <text x="180" y="48" fill="#34D399" font-weight="bold">NH-44 Bypass Corridor (Clear)</text>
-
-      <text x="0" y="72" fill="#94A3B8">Export Compatibility:</text>
-      <text x="180" y="72" fill="#38BDF8" font-weight="bold">RFC 7946 GeoJSON / QGIS</text>
+      <circle cx="6" cy="50" r="5" fill="#EF4444"/>
+      <text x="22" y="54" fill="#E2E8F0" font-size="10" class="font-mono">Route 3 (Old Bridge):</text>
+      <text x="200" y="54" fill="#F87171" font-size="10" font-weight="bold" class="font-mono">SUBMERGED (&gt;0.8m)</text>
     </g>
   </g>
 </svg>

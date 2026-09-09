@@ -23,7 +23,13 @@
 
   <style>
     @keyframes pulseDash { to { stroke-dashoffset: -40; } }
+    @keyframes tierHover { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-3px); } }
+    @keyframes floatTitle { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-2px); } }
     .pulse-data { stroke-dasharray: 6, 6; animation: pulseDash 1.5s linear infinite; }
+    .tier-1-anim { animation: tierHover 5s ease-in-out infinite; }
+    .tier-2-anim { animation: tierHover 5s ease-in-out 1.2s infinite; }
+    .tier-3-anim { animation: tierHover 5s ease-in-out 2.4s infinite; }
+    .title-anim { animation: floatTitle 4s ease-in-out infinite; }
     .font-sans { font-family: 'Space Grotesk', -apple-system, sans-serif; }
     .font-mono { font-family: 'JetBrains Mono', monospace; }
   </style>
@@ -31,7 +37,7 @@
   <rect width="1100" height="680" fill="#030712"/>
 
   <!-- Title Header -->
-  <g transform="translate(50, 40)">
+  <g transform="translate(50, 40)" class="title-anim">
     <text x="0" y="0" fill="#38BDF8" font-size="12" font-weight="bold" class="font-mono">
       SYSTEM TOPOLOGY // MULTI-TIER 3D ISOMETRIC SPECIFICATION
     </text>
@@ -41,7 +47,7 @@
   </g>
 
   <!-- ================= TIER 1 (TOP): 3D SPATIAL PRESENTATION ================= -->
-  <g transform="translate(100, 110)" filter="url(#shadow3D)">
+  <g transform="translate(100, 110)" filter="url(#shadow3D)" class="tier-1-anim">
     <polygon points="450,0 900,60 450,120 0,60" fill="#0B1329" stroke="#0284C7" stroke-width="2"/>
     <polygon points="0,60 450,120 450,140 0,80" fill="#061220"/>
     <polygon points="450,120 900,60 900,80 450,140" fill="#040D17"/>
@@ -80,7 +86,7 @@
   </g>
 
   <!-- ================= TIER 2 (MIDDLE): 9-AGENT COGNITIVE ENGINE ================= -->
-  <g transform="translate(100, 290)" filter="url(#shadow3D)">
+  <g transform="translate(100, 290)" filter="url(#shadow3D)" class="tier-2-anim">
     <polygon points="450,0 900,60 450,120 0,60" fill="#0A1E3F" stroke="#3B82F6" stroke-width="2"/>
     <polygon points="0,60 450,120 450,140 0,80" fill="#07152D"/>
     <polygon points="450,120 900,60 900,80 450,140" fill="#050F21"/>
@@ -133,7 +139,7 @@
   </g>
 
   <!-- ================= TIER 3 (BOTTOM): SATELLITE SENSORS & DATA ================= -->
-  <g transform="translate(100, 470)" filter="url(#shadow3D)">
+  <g transform="translate(100, 470)" filter="url(#shadow3D)" class="tier-3-anim">
     <polygon points="450,0 900,60 450,120 0,60" fill="#18133E" stroke="#8B5CF6" stroke-width="2"/>
     <polygon points="0,60 450,120 450,140 0,80" fill="#120E2E"/>
     <polygon points="450,120 900,60 900,80 450,140" fill="#0C0920"/>

@@ -8,9 +8,11 @@
 
   <style>
     @keyframes ringRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes pulseCore { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-    .rotator { transform-origin: 480px 270px; animation: ringRotate 60s linear infinite; }
-    .core-pulse { transform-origin: 480px 270px; animation: pulseCore 3s ease-in-out infinite; }
+    @keyframes pulseCore { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+    @keyframes chatterFlow { to { stroke-dashoffset: -36; } }
+    .rotator { transform-origin: 480px 270px; transform-box: view-box; animation: ringRotate 60s linear infinite; will-change: transform; }
+    .core-pulse { transform-origin: 480px 270px; transform-box: view-box; animation: pulseCore 3s ease-in-out infinite; will-change: transform; }
+    .chatter-anim { stroke-dasharray: 4, 4; animation: chatterFlow 2s linear infinite; }
     .font-sans { font-family: 'Space Grotesk', -apple-system, sans-serif; }
     .font-mono { font-family: 'JetBrains Mono', monospace; }
   </style>
@@ -35,8 +37,8 @@
     <line x1="710" y1="270" x2="630" y2="135"/>
     <line x1="630" y1="135" x2="480" y2="85"/>
     <!-- Cross-chatter -->
-    <line x1="480" y1="85" x2="480" y2="455" stroke="#A855F7" stroke-width="1" stroke-dasharray="3,3"/>
-    <line x1="250" y1="270" x2="710" y2="270" stroke="#06B6D4" stroke-width="1" stroke-dasharray="3,3"/>
+    <line x1="480" y1="85" x2="480" y2="455" stroke="#A855F7" stroke-width="1.2" class="chatter-anim"/>
+    <line x1="250" y1="270" x2="710" y2="270" stroke="#06B6D4" stroke-width="1.2" class="chatter-anim"/>
   </g>
 
   <!-- Central Evidence Fusion Core -->
