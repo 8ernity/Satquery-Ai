@@ -30,6 +30,8 @@ class Settings(BaseSettings):
     # --- Location & Spatial Data API Keys ---
     google_maps_api_key: str | None = None
     nasa_earthdata_token: str | None = None
+    maptiler_api_key: str | None = None
+    openrouter_api_key: str | None = None
     mapbox_token: str | None = None
     copernicus_client_id: str | None = None
     copernicus_client_secret: str | None = None
