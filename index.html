@@ -1464,8 +1464,15 @@
         activeBtn.classList.add('bg-blue-600', 'text-white', 'font-semibold');
       }
 
-      if (tab === 'workspace') renderSatelliteTiles();
-      if (tab === 'mission') resize3DCanvas();
+      if (tab === 'workspace') {
+        renderSatelliteTiles();
+        if (map3DInstance && currentDimension === '3d') {
+          setTimeout(() => { try { map3DInstance.resize(); } catch (e) {} }, 60);
+        }
+      }
+      if (tab === 'mission') {
+        setTimeout(resize3DCanvas, 60);
+      }
     }
 
     // ============================================================================

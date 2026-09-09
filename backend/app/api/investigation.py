@@ -102,6 +102,11 @@ async def start_investigation(request: InvestigationRequest) -> InvestigationRes
         investigation_id=investigation_id,
     )
 
+    # Bound in-memory cache to prevent unbounded memory growth
+    if len(INVESTIGATION_CACHE) > 500:
+        for old_id in list(INVESTIGATION_CACHE.keys())[:50]:
+            INVESTIGATION_CACHE.pop(old_id, None)
+
     INVESTIGATION_CACHE[investigation_id] = response
     return response
 
