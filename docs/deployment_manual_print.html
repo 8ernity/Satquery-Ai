@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BHUVISION // SatQuery AI — Enterprise Production Deployment Manual</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+  @page {
+    size: A4 portrait;
+    margin: 16mm 14mm 16mm 14mm;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #0F172A;
+    background: #FFFFFF;
+    line-height: 1.5;
+    font-size: 9.5pt;
+    margin: 0;
+    padding: 0;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    color: #030712;
+    margin-top: 1.1em;
+    margin-bottom: 0.3em;
+    page-break-after: avoid;
+  }
+
+  h1 { font-size: 18pt; border-bottom: 2px solid #0284C7; padding-bottom: 4px; }
+  h2 { font-size: 13pt; border-bottom: 1px solid #CBD5E1; padding-bottom: 3px; color: #0369A1; }
+  h3 { font-size: 10.5pt; color: #0F172A; }
+
+  p { margin: 0.4em 0; text-align: justify; }
+
+  code, pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+  }
+
+  pre {
+    background: #0F172A;
+    color: #E2E8F0;
+    padding: 8px 12px;
+    border-radius: 6px;
+    overflow-x: hidden;
+    white-space: pre-wrap;
+    word-break: break-all;
+    border-left: 4px solid #0284C7;
+    margin: 0.6em 0;
+    page-break-inside: avoid;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.6em 0;
+    font-size: 8.5pt;
+    page-break-inside: avoid;
+  }
+
+  th, td {
+    border: 1px solid #CBD5E1;
+    padding: 5px 8px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #F1F5F9;
+    font-family: 'Space Grotesk', sans-serif;
+    color: #0F172A;
+    font-weight: 600;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 6px;
+    font-size: 7.5pt;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    border-radius: 4px;
+    margin-right: 4px;
+  }
+  .badge-blue { background: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD; }
+  .badge-green { background: #DCFCE7; color: #15803D; border: 1px solid #BBF7D0; }
+  .badge-purple { background: #F3E8FF; color: #7E22CE; border: 1px solid #E9D5FF; }
+
+  .callout {
+    background: #F8FAFC;
+    border-left: 4px solid #0284C7;
+    padding: 8px 12px;
+    margin: 0.6em 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 8.5pt;
+  }
+
+  .callout-warning {
+    border-left-color: #EAB308;
+    background: #FEFCE8;
+  }
+
+  .page-break {
+    page-break-after: always;
+  }
+
+  .cover-header {
+    background: linear-gradient(135deg, #030712 0%, #0F172A 100%);
+    color: #F8FAFC;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  .cover-header h1 {
+    color: #38BDF8;
+    border-bottom: none;
+    margin: 0 0 4px 0;
+    font-size: 20pt;
+  }
+  .cover-header p {
+    color: #94A3B8;
+    margin: 0;
+    font-size: 9.5pt;
+  }
+</style>
+</head>
+<body>
+
+<div class="cover-header">
+  <h1>BHUVISION // SatQuery AI</h1>
+  <p><strong>Enterprise Production Deployment & Systems Engineering Manual</strong></p>
+  <p style="font-size: 8.5pt; color: #38BDF8; margin-top: 4px;">
+    Smart India Hackathon 2026 • Problem Statement: SIH26167 • ISRO Mentorship • Team: BANKAI • Ver: 2.4-PROD
+  </p>
+</div>
+
+<h2>1. Executive Summary & Production Topology</h2>
+<p>
+  <strong>BHUVISION (SatQuery AI)</strong> is an autonomous multi-sensor satellite Earth intelligence platform designed to ingest and analyze multi-spectral optical imagery (Sentinel-2, Cartosat-3, Landsat-9) and Synthetic Aperture Radar (SAR Sentinel-1, RISAT-1B). The platform integrates a 9-agent autonomous reasoning graph, photorealistic 3D Google Earth terrain elevation, authenticated NASA GIBS and MapTiler feeds, Google Maps Platform hybrid layers, and a bank-grade multi-factor authentication suite.
+</p>
+
+<table>
+  <tr>
+    <th style="width: 25%;">Subsystem</th>
+    <th style="width: 35%;">Technology Component</th>
+    <th style="width: 40%;">Operational Function</th>
+  </tr>
+  <tr>
+    <td><strong>Core Backend</strong></td>
+    <td>FastAPI (Python 3.13) + Uvicorn + Pydantic v2</td>
+    <td>High-throughput async REST API, agent pipelines, telemetry</td>
+  </tr>
+  <tr>
+    <td><strong>3D Google Earth Map</strong></td>
+    <td>MapLibre GL 3.6.2 + MapTiler 3D + Three.js r128</td>
+    <td>60 FPS GPU-accelerated terrain elevation (DEM), 3D buildings, sky haze</td>
+  </tr>
+  <tr>
+    <td><strong>Geospatial Feeds</strong></td>
+    <td>Google Maps + MapTiler + NASA GIBS + AWS DEM</td>
+    <td>0.15m GSD Google Hybrid, 0.5m MapTiler, NRT 250m NASA, AWS Terrarium DEM</td>
+  </tr>
+  <tr>
+    <td><strong>Agentic Reasoning</strong></td>
+    <td>OpenRouter LLM Gateway (9 Specialized Models)</td>
+    <td>Gemini 2.5/2.0, Claude 3.7 Sonnet, Qwen 2.5 72B, DeepSeek V3, Llama 3.3</td>
+  </tr>
+  <tr>
+    <td><strong>Authentication Suite</strong></td>
+    <td>Google SSO OAuth 2.0 + Email/Pass + Phone SMS OTP</td>
+    <td>JWT Bearer tokens (24h TTL), bcrypt hashing, 6-digit cryptographic OTP</td>
+  </tr>
+  <tr>
+    <td><strong>Mobile Distribution</strong></td>
+    <td>Progressive Web App (PWA) + Manifest + Service Worker</td>
+    <td>Standalone mobile installability on Android, iOS, and Desktop</td>
+  </tr>
+</table>
+
+<h2>2. Authentication Suite Configuration</h2>
+<p>
+  BHUVISION supports three enterprise authentication workflows: Google Single Sign-On (OAuth 2.0), Email/Password Registration, and Phone SMS OTP Verification.
+</p>
+
+<h3>2.1 Google OAuth 2.0 Setup</h3>
+<ol>
+  <li>Navigate to the Google Cloud Console (<a href="https://console.cloud.google.com/">console.cloud.google.com</a>) and create or select your project.</li>
+  <li>Navigate to <strong>APIs & Services &rarr; Credentials</strong> and click <strong>Create Credentials &rarr; OAuth Client ID</strong>.</li>
+  <li>Set Application Type to <strong>Web application</strong>.</li>
+  <li>Under <strong>Authorized JavaScript origins</strong>, add your domains:
+    <pre>http://localhost:8000
+http://127.0.0.1:8000
+https://bhuvision.yourdomain.com</pre>
+  </li>
+  <li>Under <strong>Authorized redirect URIs</strong>, add:
+    <pre>https://bhuvision.yourdomain.com/api/auth/google/callback</pre>
+  </li>
+  <li>Copy your <code>Client ID</code> and <code>Client Secret</code> into your <code>.env</code> file:
+    <pre>GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GOCSPX-your-google-client-secret</pre>
+  </li>
+</ol>
+
+<h3>2.2 Phone SMS OTP Integration</h3>
+<p>
+  The platform includes endpoints for SMS dispatch (<code>/api/auth/otp/send</code>) and verification (<code>/api/auth/otp/verify</code>). By default, in local testing it uses secure simulated delivery. For production dispatch, configure your SMS Gateway provider (Twilio, AWS SNS, MSG91, or Fast2SMS):
+</p>
+<pre>SMS_GATEWAY_PROVIDER=twilio  # options: twilio, aws_sns, msg91, fast2sms
+TWILIO_ACCOUNT_SID=ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+TWILIO_AUTH_TOKEN=your_twilio_auth_token
+TWILIO_PHONE_NUMBER=+1234567890</pre>
+
+<div class="page-break"></div>
+
+<h2>3. Geospatial & AI Gateways Configuration</h2>
+
+<h3>3.1 Three Active Map API Providers</h3>
+<p>
+  BHUVISION uniquely orchestrates three commercial and scientific map APIs concurrently:
+</p>
+<ul>
+  <li><strong>Google Maps Platform:</strong> Provides high-resolution Google Hybrid satellite imagery, vector maps, 3D tilt (67.5°), and geocoding. Enable <em>Maps JavaScript API</em> in GCP Console.</li>
+  <li><strong>MapTiler Cloud:</strong> Provides 3D Digital Elevation Models (Terrain-RGB) and satellite imagery. Configured via API Key in MapTiler Cloud Settings.</li>
+  <li><strong>NASA Earthdata & GIBS:</strong> Delivers near-real-time (NRT) 250m resolution MODIS Terra/Aqua and VIIRS daily reflectance layers via authenticated Bearer JWT tokens.</li>
+  <li><strong>AWS Open Data Terrarium DEM:</strong> Global open-access 3D elevation tiles used for zero-failure fallback.</li>
+</ul>
+
+<h3>3.2 OpenRouter 9-Agent Model Lineup</h3>
+<p>
+  The multi-agent graph routes specialized subtasks to top-tier reasoning models via the OpenRouter gateway:
+</p>
+<table>
+  <tr>
+    <th>Agent Role</th>
+    <th>Configured LLM Model</th>
+    <th>Specialized Function</th>
+  </tr>
+  <tr>
+    <td><strong>Lead Orchestrator</strong></td>
+    <td><code>google/gemini-2.5-pro</code></td>
+    <td>High-level query decomposition and agent consensus</td>
+  </tr>
+  <tr>
+    <td><strong>Query Planner</strong></td>
+    <td><code>anthropic/claude-3.7-sonnet</code></td>
+    <td>Temporal bounding and sensor requirement planning</td>
+  </tr>
+  <tr>
+    <td><strong>Sensor Router</strong></td>
+    <td><code>meta-llama/llama-3.3-70b-instruct</code></td>
+    <td>Spectral band routing (Optical vs SAR vs NDVI)</td>
+  </tr>
+  <tr>
+    <td><strong>SAR Radar Expert</strong></td>
+    <td><code>deepseek/deepseek-r1</code></td>
+    <td>Dielectric roughness, double-bounce, flood backscatter</td>
+  </tr>
+  <tr>
+    <td><strong>Change Detection</strong></td>
+    <td><code>qwen/qwen-2.5-72b-instruct</code></td>
+    <td>Bi-temporal differencing and morphological analysis</td>
+  </tr>
+  <tr>
+    <td><strong>Visual Grounding</strong></td>
+    <td><code>google/gemini-2.0-flash-exp</code></td>
+    <td>Bounding polygon coordinates and MGRS projection</td>
+  </tr>
+  <tr>
+    <td><strong>VQA Analyst</strong></td>
+    <td><code>anthropic/claude-3.5-sonnet</code></td>
+    <td>Visual Question Answering on high-res tiles</td>
+  </tr>
+  <tr>
+    <td><strong>Evidence Fusion</strong></td>
+    <td><code>mistralai/mistral-large-2407</code></td>
+    <td>Multi-sensor synthesis and confidence calibration</td>
+  </tr>
+  <tr>
+    <td><strong>Audit & Trace</strong></td>
+    <td><code>openai/gpt-4o-mini</code></td>
+    <td>Immutable trace ledger and chain-of-custody</td>
+  </tr>
+</table>
+
+<h2>4. Step-by-Step Deployment Workflows</h2>
+
+<h3>Option A: Docker & Docker Compose (Recommended for Production)</h3>
+<p>
+  Deploy the entire stack with containerized FastAPI backend, Nginx reverse proxy, and automated SSL:
+</p>
+<pre># 1. Clone repository on production server
+git clone https://github.com/Ayushnot41/Satquery-Ai.git /opt/bhuvision
+cd /opt/bhuvision
+
+# 2. Configure production secrets
+cp .env.example .env
+nano .env  # Add your domain, JWT secret, and API keys
+
+# 3. Build and launch containerized services
+docker compose up -d --build
+
+# 4. Verify running health
+docker compose ps
+curl -I http://localhost:8000/api/health</pre>
+
+<h3>Option B: Linux Cloud VM (Ubuntu 24.04 LTS / AWS EC2 / DigitalOcean)</h3>
+<p>
+  Deploy as a systemd service behind an Nginx reverse proxy:
+</p>
+<pre># 1. Install system prerequisites
+sudo apt-get update && sudo apt-get install -y python3.13 python3.13-venv nginx certbot python3-certbot-nginx git
+
+# 2. Setup project virtual environment
+cd /opt/bhuvision
+python3.13 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip
+pip install -r backend/requirements.txt
+
+# 3. Configure Systemd Service (/etc/systemd/system/bhuvision.service)
+sudo tee /etc/systemd/system/bhuvision.service &lt;&lt; 'EOF'
+[Unit]
+Description=BHUVISION SatQuery AI FastAPI Application
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/opt/bhuvision/backend
+ExecStart=/opt/bhuvision/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 4
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# 4. Start and enable service
+sudo systemctl daemon-reload
+sudo systemctl start ahuvision
+sudo systemctl enable bhuvision</pre>
+
+<div class="page-break"></div>
+
+<h2>5. Nginx Reverse Proxy & SSL Configuration</h2>
+<p>
+  Create an Nginx configuration block with HTTP/2, WebSocket proxying, and caching:
+</p>
+<pre>server {
+    listen 80;
+    server_name bhuvision.yourdomain.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name bhuvision.yourdomain.com;
+
+    ssl_certificate /etc/letsencrypt/live/bhuvision.yourdomain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/bhuvision.yourdomain.com/privkey.pem;
+
+    # Gzip Compression
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}</pre>
+<pre># Issue free Let's Encrypt SSL Certificate
+sudo certbot --nginx -d bhuvision.yourdomain.com</pre>
+
+<h2>6. Mobile Web App (PWA) Deployment</h2>
+<p>
+  BHUVISION is fully engineered as an installable Progressive Web App:
+</p>
+<ul>
+  <li><strong>Web App Manifest:</strong> Hosted at <code>/manifest.json</code> with <code>display: standalone</code>, <code>theme_color: #0B1120</code>, and complete ISRO icon sets.</li>
+  <li><strong>Android Chrome Installation:</strong> Open the URL on mobile Chrome &rarr; tap the three dots &rarr; tap <strong>"Add to Home Screen"</strong> or <strong>"Install App"</strong>. Runs full-screen without URL bars.</li>
+  <li><strong>iOS Safari Installation:</strong> Open on mobile Safari &rarr; tap the <strong>Share</strong> button &rarr; tap <strong>"Add to Home Screen"</strong>. Launches as a native-feel iOS web app.</li>
+  <li><strong>Google Play Store Packaging:</strong> Use Microsoft PWABuilder (pwabuilder.com) or Bubblewrap CLI to generate an Android signed <code>.aab</code> package directly from your live URL.</li>
+</ul>
+
+<h2>7. Automated Testing & Verification Suite</h2>
+<p>
+  Before releasing to production, execute the automated verification suite:
+</p>
+<pre># Execute complete pytest suite (43 passed tests)
+pytest backend/tests/ -v --tb=short
+
+# Verify SVG asset integrity
+pytest backend/tests/test_svg_assets_validity.py -v
+
+# Health check probe
+curl -s http://127.0.0.1:8000/api/health</pre>
+
+<div class="callout callout-warning">
+  <strong>Production Security Checklist:</strong><br>
+  1. Set <code>ENVIRONMENT=production</code> and <code>DEBUG=false</code> in <code>.env</code>.<br>
+  2. Change the default <code>JWT_SECRET_KEY</code> to a high-entropy 256-bit random string.<br>
+  3. Ensure CORS <code>ORIGINS</code> in <code>main.py</code> only allow authorized production hostnames.<br>
+  4. Restrict Google Cloud and MapTiler API keys with HTTP referer domain restrictions.
+</div>
+
+<p style="text-align: center; color: #64748B; font-size: 8.5pt; margin-top: 30px;">
+  BHUVISION Space Intelligence System • Government of India / ISRO Mentorship • SIH 2026<br>
+  Document Generated Automatically • Confidential & Operational
+</p>
+
+</body>
+</html>

@@ -221,5 +221,18 @@ async def test_authentication_suite():
         assert r_me.json()["user"]["name"] == "Dr. Subrahmanyan Chandrasekhar"
 
 
+@pytest.mark.asyncio
+async def test_deployment_manual_download():
+    """Verify that the Enterprise Production Deployment Manual PDF endpoint serves valid PDF content."""
+    transport = httpx.ASGITransport(app=app)
+    async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        res = await client.get("/api/download/deployment-manual")
+        assert res.status_code == 200
+        assert res.headers["content-type"] == "application/pdf"
+        assert len(res.content) > 50000  # PDF is ~338 KB
+        assert res.content.startswith(b"%PDF")
+
+
+
 
 
