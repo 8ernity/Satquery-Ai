@@ -116,8 +116,8 @@ async def get_manifest():
     return {"name": "BHUVISION", "short_name": "BHUVISION"}
 
 
-@app.get("/app", tags=["Frontend Application"])
-@app.get("/preview", tags=["Frontend Application"])
+@app.api_route("/app", methods=["GET", "HEAD"], tags=["Frontend Application"])
+@app.api_route("/preview", methods=["GET", "HEAD"], tags=["Frontend Application"])
 async def get_interactive_app():
     """Serves the complete production-level BHUVISION 3D Earth & Surveillance Cockpit."""
     preview_file = Path(__file__).resolve().parents[2] / "bhuvision_preview.html"
