@@ -9,10 +9,10 @@ from __future__ import annotations
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from .api.health import router as health_router
 from .api.imagery import router as imagery_router
@@ -54,14 +54,35 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS middleware for frontend communication
+# CORS middleware with standards-compliant credential support
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origin_list + ["*"],
+    allow_origins=settings.cors_origin_list + [
+        "http://localhost:3000",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://127.0.0.1:3000",
+        "https://raw.githack.com",
+    ],
+    allow_origin_regex=r"https?://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """Global exception barrier preventing unhandled server crashes and raw stack traces."""
+    logger.error("unhandled_server_exception", path=str(request.url), error=str(exc))
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": "Internal spatial intelligence pipeline exception.",
+            "error": str(exc),
+            "status": "error",
+        },
+    )
 
 # Static file mounts for previews and demo imagery
 upload_path = settings.upload_path

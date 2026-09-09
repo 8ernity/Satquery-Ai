@@ -148,10 +148,35 @@ Traditional satellite tools only show flat 2D maps from directly above. During f
 
 To prove the accuracy of our bi-temporal detection engines, BHUVISION comes preloaded with real-world satellite benchmark datasets:
 
-| Mission Investigation | Baseline ($T_1$) Satellite View | Observation ($T_2$) Satellite View | AI Council Ground-Truth Result |
-| :---: | :---: | :---: | :--- |
-| **Monsoon Flood Penetration**<br/>*(Assam Brahmaputra Valley)* | <img src="backend/data/demo/demo-flood-pre-optical.png" width="220" alt="Pre-flood optical"/><br/>**$T_1$ Optical Imagery**<br/>*Normal daylight riverbed* | <img src="backend/data/demo/demo-flood-post-sar.png" width="220" alt="Post-flood SAR radar"/><br/>**$T_2$ Space Radar (SAR)**<br/>*Monsoon storm clouds bypassed* | 🌊 **8,420 Hectares Inundated**<br/>Optical was blind due to clouds. C-Band Space Radar detected specular water return ($\sigma^0 < -18\text{ dB}$), delineating exact flood perimeter. |
-| **Sub-Meter Urban Expansion**<br/>*(Bengaluru Tech Corridor)* | <img src="backend/data/demo/demo-construction-before.png" width="220" alt="Pre-construction"/><br/>**$T_1$ Baseline (2023)**<br/>*Bare land & early groundwork* | <img src="backend/data/demo/demo-construction-after.png" width="220" alt="Post-construction"/><br/>**$T_2$ Observation (2024)**<br/>*High-density structural expansion* | 🏗️ **+14 New Commercial Facilities**<br/>Bi-temporal computer vision isolated 14 new building foundations and verified concrete road paving ($+42.6\text{ Ha}$ urban growth). |
+### 🌊 Investigation 1: Monsoon Cloud Penetration (Assam Brahmaputra Valley)
+*Optical cameras were completely blinded by monsoon storm clouds. Sentinel-1 C-Band Space Radar pierced the weather to detect specular water reflection ($\sigma^0 < -18\text{ dB}$), delineating exact flood perimeter.*
+
+<div align="center">
+
+| Baseline ($T_1$ Optical Daylight) | Observation ($T_2$ Space Radar SAR) |
+| :---: | :---: |
+| <img src="assets/demo-flood-pre-optical.jpg" alt="Baseline Optical Daylight" width="100%" style="max-width: 440px; border-radius: 8px;"/> | <img src="assets/demo-flood-post-sar.jpg" alt="Post-Disaster Space Radar" width="100%" style="max-width: 440px; border-radius: 8px;"/> |
+| *Pre-Disaster: Normal daylight optical riverbed* | *Post-Disaster: Radar penetrates storm clouds (Water in jet black)* |
+
+</div>
+
+> 📊 **Council Verdict:** **8,420 Hectares Flooded.** Space Radar overrules optical camera. Flood perimeter locked and alternate emergency evacuation route plotted.
+
+<br/>
+
+### 🏗️ Investigation 2: Sub-Meter Urban Expansion (Bengaluru Tech Corridor)
+*Bi-temporal computer vision differencing comparing 2023 vs 2024 satellite passes to track rapid infrastructure growth.*
+
+<div align="center">
+
+| Baseline ($T_1$ 2023 Infrastructure) | Observation ($T_2$ 2024 New Construction) |
+| :---: | :---: |
+| <img src="assets/demo-construction-before.jpg" alt="2023 Baseline Infrastructure" width="100%" style="max-width: 440px; border-radius: 8px;"/> | <img src="assets/demo-construction-after.jpg" alt="2024 New Construction" width="100%" style="max-width: 440px; border-radius: 8px;"/> |
+| *2023: Bare land & early groundwork* | *2024: 14 new commercial facilities & paved arterial roads* |
+
+</div>
+
+> 📊 **Council Verdict:** **+14 New Commercial Facilities Verified.** $+42.6\text{ Ha}$ urban growth detected with sub-meter coordinate bounding boxes.
 
 ---
 

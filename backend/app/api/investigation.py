@@ -165,6 +165,10 @@ async def measure_polygon_area(request: PolygonMeasurementRequest) -> dict[str, 
     if len(pts) < 3:
         raise HTTPException(status_code=400, detail="Polygon must contain at least 3 vertices")
 
+    for p in pts:
+        if len(p) < 2 or not math.isfinite(p[0]) or not math.isfinite(p[1]):
+            raise HTTPException(status_code=400, detail="Each polygon vertex must contain valid finite [lat, lon] coordinates")
+
     # Geodesic Shoelace Formula on spherical projection
     R = 6378137.0  # Earth radius in meters
     area_sqm = 0.0

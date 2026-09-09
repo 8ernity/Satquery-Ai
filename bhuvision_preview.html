@@ -96,6 +96,35 @@
       transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       transform-origin: center center;
     }
+
+    /* Mobile, Touch & Performance Optimizations (Zero-Jitter Architecture) */
+    #globe-3d-canvas,
+    #tile-viewport-container,
+    #maplibre-3d-container {
+      touch-action: none !important;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    @media (max-width: 640px) {
+      #heading-badge-past,
+      #heading-badge-live {
+        padding: 4px 8px !important;
+      }
+      #heading-badge-past > div > div:nth-child(2),
+      #heading-badge-live > div > div:nth-child(2) {
+        display: none !important;
+      }
+      #satellite-viewport-box {
+        height: 420px !important;
+      }
+      #google-earth-compass-gizmo {
+        transform: scale(0.85);
+        right: 8px !important;
+        top: 48px !important;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-cyan-600/30 selection:text-cyan-200">
@@ -384,7 +413,7 @@
       <div class="relative w-full h-[580px] bg-[#030611] rounded-2xl border border-[#1F2937] overflow-hidden flex flex-col justify-between p-6 shadow-2xl tactical-grid">
         
         <!-- Interactive 3D Canvas -->
-        <canvas id="globe-3d-canvas" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+        <canvas id="globe-3d-canvas" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing" style="touch-action: none;"></canvas>
 
         <!-- Hypersonic Re-entry & Orbital Swoop FX Overlay -->
         <div id="hypersonic-fx-overlay" class="hidden absolute inset-0 z-30 pointer-events-none flex flex-col items-center justify-center transition-all duration-300"
@@ -691,7 +720,7 @@
             </div>
 
             <!-- Real Slippy Tile Viewport Canvas Container -->
-            <div class="relative flex-1 w-full h-full overflow-hidden bg-[#030611] perspective-surface cursor-grab active:cursor-grabbing" id="tile-viewport-container">
+            <div class="relative flex-1 w-full h-full overflow-hidden bg-[#030611] perspective-surface cursor-grab active:cursor-grabbing" id="tile-viewport-container" style="touch-action: none;">
               
               <!-- Google Maps Live Mount Container -->
               <div id="google-maps-container" class="hidden absolute inset-0 z-10 w-full h-full"></div>
