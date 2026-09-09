@@ -368,7 +368,7 @@ cd "g:\Satquery Ai\backend"
 ### 3. Run Automated Tests
 ```powershell
 & "C:\Program Files\Python313\python.exe" -m pytest backend/tests -v
-# Result: 16 passed in 1.92s (100% green across all 9 agents, spectral ratios & spatial API endpoints)
+# Result: 17 passed in 2.06s (100% green across all 9 agents, spectral ratios & spatial API endpoints)
 ```
 
 ---

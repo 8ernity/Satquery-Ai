@@ -270,7 +270,10 @@ export function SatelliteViewer({
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
-        style={{ perspective: dimensionMode === "3d" ? "1200px" : "none" }}
+        style={{
+          perspective: dimensionMode === "3d" ? "1200px" : "none",
+          transformStyle: "preserve-3d",
+        }}
         className={`relative w-full h-[550px] bg-[#050813] rounded-xl overflow-hidden border border-[#1F2937] select-none flex flex-col shadow-2xl ${
           isMeasuring ? "cursor-crosshair" : "cursor-grab active:cursor-grabbing"
         }`}
@@ -435,6 +438,8 @@ export function SatelliteViewer({
                 ? `rotateX(${pitch}deg) rotateZ(${yaw}deg) scale(0.92)`
                 : "none",
             transformOrigin: "center center",
+            transformStyle: "preserve-3d",
+            willChange: "transform",
           }}
         >
           {/* Pre-Event Baseline Tile Container */}
