@@ -46,6 +46,12 @@ AGENT_MODEL_MAP: dict[int, str] = {
 # Gateway priority: OpenRouter → OmniRoute → FreeLLMAPI
 _GATEWAYS = [
     {
+        "name": "AstraGPT6",
+        "base_url": settings.astra_base_url,
+        "api_key": settings.astra_api_key or os.environ.get("ASTRA_API_KEY", ""),
+        "enabled": bool(settings.astra_api_key or os.environ.get("ASTRA_API_KEY")),
+    },
+    {
         "name": "OpenRouter",
         "base_url": "https://openrouter.ai/api/v1",
         "api_key": settings.openrouter_api_key or "",

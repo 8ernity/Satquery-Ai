@@ -19,6 +19,8 @@ from ..geospatial.raster import extract_metadata
 from ..models.base import VLMBackend
 from ..models.demo_backend import DemoBackend
 from ..models.gateway_backend import GatewayBackend
+from ..models.local_lora_backend import LocalLoRABackend
+from ..models.vllm_backend import VLLMBackend
 from ..schemas.imagery import ImageryInput, SensorType
 from ..schemas.investigation import (
     InvestigationRequest,
@@ -35,6 +37,10 @@ INVESTIGATION_CACHE: dict[str, InvestigationResponse] = {}
 def get_vlm_backend() -> VLMBackend:
     if settings.vlm_backend == "gateway":
         return GatewayBackend()
+    if settings.vlm_backend == "local_lora":
+        return LocalLoRABackend()
+    if settings.vlm_backend == "vllm":
+        return VLLMBackend()
     return DemoBackend()
 
 
