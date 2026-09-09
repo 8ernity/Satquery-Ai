@@ -96,6 +96,35 @@
       transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       transform-origin: center center;
     }
+
+    /* Mobile, Touch & Performance Optimizations (Zero-Jitter Architecture) */
+    #globe-3d-canvas,
+    #tile-viewport-container,
+    #maplibre-3d-container {
+      touch-action: none !important;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    @media (max-width: 640px) {
+      #heading-badge-past,
+      #heading-badge-live {
+        padding: 4px 8px !important;
+      }
+      #heading-badge-past > div > div:nth-child(2),
+      #heading-badge-live > div > div:nth-child(2) {
+        display: none !important;
+      }
+      #satellite-viewport-box {
+        height: 420px !important;
+      }
+      #google-earth-compass-gizmo {
+        transform: scale(0.85);
+        right: 8px !important;
+        top: 48px !important;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-cyan-600/30 selection:text-cyan-200">
@@ -384,7 +413,7 @@
       <div class="relative w-full h-[580px] bg-[#030611] rounded-2xl border border-[#1F2937] overflow-hidden flex flex-col justify-between p-6 shadow-2xl tactical-grid">
         
         <!-- Interactive 3D Canvas -->
-        <canvas id="globe-3d-canvas" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+        <canvas id="globe-3d-canvas" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing" style="touch-action: none;"></canvas>
 
         <!-- Hypersonic Re-entry & Orbital Swoop FX Overlay -->
         <div id="hypersonic-fx-overlay" class="hidden absolute inset-0 z-30 pointer-events-none flex flex-col items-center justify-center transition-all duration-300"
@@ -691,7 +720,7 @@
             </div>
 
             <!-- Real Slippy Tile Viewport Canvas Container -->
-            <div class="relative flex-1 w-full h-full overflow-hidden bg-[#030611] perspective-surface cursor-grab active:cursor-grabbing" id="tile-viewport-container">
+            <div class="relative flex-1 w-full h-full overflow-hidden bg-[#030611] perspective-surface cursor-grab active:cursor-grabbing" id="tile-viewport-container" style="touch-action: none;">
               
               <!-- Google Maps Live Mount Container -->
               <div id="google-maps-container" class="hidden absolute inset-0 z-10 w-full h-full"></div>
@@ -1669,10 +1698,15 @@
       }
     }
 
+    let lastTelemetryPitch = -999;
+    let lastTelemetryBearing = -999;
     function syncGoogleEarthTelemetry() {
       if (!map3DInstance) return;
       const pitch = Math.round(map3DInstance.getPitch());
       const bearing = Math.round(map3DInstance.getBearing());
+      if (pitch === lastTelemetryPitch && bearing === lastTelemetryBearing) return;
+      lastTelemetryPitch = pitch;
+      lastTelemetryBearing = bearing;
 
       // Update 3D Compass Needle Dial
       const needle = document.getElementById('compass-needle-dial');
@@ -1687,8 +1721,8 @@
       const sliderYaw = document.getElementById('slider-yaw');
       if (pitchLabel) pitchLabel.innerText = `${pitch}°`;
       if (yawLabel) yawLabel.innerText = `${bearing}°`;
-      if (sliderPitch) sliderPitch.value = pitch;
-      if (sliderYaw) sliderYaw.value = bearing;
+      if (sliderPitch && sliderPitch.value != pitch) sliderPitch.value = pitch;
+      if (sliderYaw && sliderYaw.value != bearing) sliderYaw.value = bearing;
 
       // Update Dimension Status Badge
       const badge = document.getElementById('viewport-dimension-badge');
@@ -2986,33 +3020,41 @@
       animateThree();
     }
 
-    // Animation Loop
+    // Animation Loop with Frame-Rate Clamped Delta Timing (Zero-Jitter Architecture)
     let animClock = 0;
+    let lastAnimFrameTime = performance.now();
     function animateThree() {
       requestAnimationFrame(animateThree);
       if (!threeRenderer || !threeScene || !threeCamera) return;
 
-      animClock += 0.015;
+      const now = performance.now();
+      const rawDelta = (now - lastAnimFrameTime) / 1000;
+      lastAnimFrameTime = now;
+      // Clamp delta to 100ms max to prevent wild teleportation when returning from background tabs
+      const dt = Math.min(rawDelta, 0.1);
+      const timeScale = dt * 60; // normalized to 1.0 at 60fps
 
-      // 1. Slow Earth rotation (axial spin)
+      animClock += dt;
+
+      // 1. Frame-rate independent Earth rotation (axial spin)
       if (earthGroup) {
-        earthGroup.rotation.y += 0.0008;
+        earthGroup.rotation.y += 0.0008 * timeScale;
       }
 
       // 2. Cloud layer independent motion
       if (cloudsMesh) {
-        cloudsMesh.rotation.y += 0.0012;
+        cloudsMesh.rotation.y += 0.0012 * timeScale;
       }
 
       // 3. Pulse Beacons
-      const pulse = 1.0 + Math.sin(animClock * 3) * 0.25;
+      const pulse = 1.0 + Math.sin(animClock * 3.5) * 0.25;
       beaconSprites.forEach(b => {
         b.sprite.scale.set(b.baseScale * pulse, b.baseScale * pulse, 1);
       });
 
       // 4. Propagate Satellites in Orbits
       satellites.forEach(sat => {
-        sat.currentAngle += sat.data.speed * 0.7;
+        sat.currentAngle += sat.data.speed * 0.7 * timeScale;
         const ox = sat.data.radius * Math.cos(sat.currentAngle);
         const oy = sat.data.radius * Math.sin(sat.currentAngle) * Math.cos(sat.incRad);
         const oz = sat.data.radius * Math.sin(sat.currentAngle) * Math.sin(sat.incRad);
@@ -4023,8 +4065,15 @@
       loadSavedSession();
       setTimeout(resize3DCanvas, 150);
     });
+    let resizeRafHandle = null;
     window.addEventListener('resize', () => {
-      resize3DCanvas();
+      if (resizeRafHandle) cancelAnimationFrame(resizeRafHandle);
+      resizeRafHandle = requestAnimationFrame(() => {
+        resize3DCanvas();
+        if (map3DInstance) {
+          try { map3DInstance.resize(); } catch (e) {}
+        }
+      });
     });
   </script>
 </body>
