@@ -126,8 +126,8 @@ async def get_interactive_app():
     return {"error": "Application file not found", "path": str(preview_file)}
 
 
-@app.get("/api/download/deployment-manual", tags=["Documentation"])
-@app.get("/docs/deployment-manual.pdf", tags=["Documentation"])
+@app.api_route("/api/download/deployment-manual", methods=["GET", "HEAD"], tags=["Documentation"])
+@app.api_route("/docs/deployment-manual.pdf", methods=["GET", "HEAD"], tags=["Documentation"])
 async def download_deployment_manual_pdf():
     """Serves the complete Enterprise Production Deployment Manual PDF for direct download."""
     pdf_file = Path(__file__).resolve().parents[2] / "docs" / "BHUVISION_PRODUCTION_DEPLOYMENT_MANUAL.pdf"

@@ -334,11 +334,15 @@
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </div>
         <div class="relative flex-1">
-          <input type="text" id="mission-search-input" oninput="handleSearchInput(this.value, 'mission')"
-                 placeholder="Search any location on Earth to rotate 3D HUD (e.g., Bengaluru, Kedarnath, Mumbai, Dubai, Suez)..."
+          <input type="text" id="mission-search-input" oninput="handleSearchInput(this.value, 'mission')" onkeydown="handleSearchKeyDown(event, 'mission')"
+                 placeholder="Search any location on Earth to fly 3D Earth (e.g. Bengaluru, Kedarnath, Mumbai, Dubai, Paris, Tokyo)..."
                  class="w-full bg-[#030611] border border-[#1F2937] focus:border-cyan-400 rounded-lg px-3 py-2 text-xs text-white placeholder-gray-500 font-mono outline-none" />
           <div id="mission-search-dropdown" class="hidden absolute top-full left-0 right-0 mt-1 bg-[#070B16] border border-[#1F2937] rounded-xl shadow-2xl z-50 max-h-60 overflow-y-auto divide-y divide-[#1F2937]/50 font-mono text-xs"></div>
         </div>
+        <button onclick="executeMissionSearch()" class="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-mono text-xs font-bold rounded-lg flex items-center gap-1.5 cursor-pointer shadow border border-cyan-400/30 shrink-0" title="Fly to searched location in 3D Earth">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <span>Fly To</span>
+        </button>
         <div class="hidden sm:flex items-center gap-2 text-[11px] font-mono text-cyan-300 bg-black/60 px-3 py-1.5 rounded-lg border border-cyan-500/30 shrink-0">
           <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
           <span id="mission-target-badge">TARGET: BENGALURU</span>
@@ -485,11 +489,15 @@
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-cyan-400">
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </div>
-            <input type="text" id="workspace-search-input" oninput="handleSearchInput(this.value, 'workspace')"
-                   placeholder="Search any place or city worldwide (e.g. Bengaluru, Kedarnath, Mumbai, Dubai)..."
+            <input type="text" id="workspace-search-input" oninput="handleSearchInput(this.value, 'workspace')" onkeydown="handleSearchKeyDown(event, 'workspace')"
+                   placeholder="Search any place or city worldwide (e.g. Bengaluru, Kedarnath, Mumbai, Dubai, Paris)..."
                    class="w-full bg-[#030611] border border-[#1F2937] focus:border-cyan-400 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-gray-500 font-mono outline-none" />
             <div id="workspace-search-dropdown" class="hidden absolute top-full left-0 right-0 mt-1 bg-[#070B16] border border-[#1F2937] rounded-xl shadow-2xl z-50 max-h-60 overflow-y-auto divide-y divide-[#1F2937]/50 font-mono text-xs"></div>
           </div>
+          <button onclick="executeWorkspaceSearch()" class="px-3.5 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-mono text-xs font-bold rounded-xl flex items-center gap-1.5 cursor-pointer shadow border border-cyan-400/30 shrink-0" title="Fly to searched location in satellite map">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <span>Fly To</span>
+          </button>
 
           <!-- Dimension Switcher (2D Nadir vs 3D Google Earth vs 3D Globe) -->
           <div class="flex items-center gap-1 bg-[#070B14] p-1 rounded-xl border border-[#1F2937] shrink-0 font-mono text-xs">
@@ -2450,6 +2458,52 @@
       }
     }
 
+    function handleSearchKeyDown(event, viewType) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        executeSearchForView(viewType);
+      }
+    }
+
+    async function executeSearchForView(viewType) {
+      const input = document.getElementById(`${viewType}-search-input`);
+      if (!input) return;
+      const query = input.value.trim();
+      if (!query) return;
+
+      const dropdown = document.getElementById(`${viewType}-search-dropdown`);
+      if (dropdown) dropdown.classList.add('hidden');
+
+      // Check local strategic hotspots first
+      const match = STRATEGIC_HOTSPOTS.find(h => h.name.toLowerCase().includes(query.toLowerCase()));
+      if (match) {
+        selectLocation(match.name, match.lat, match.lon, match.mgrs);
+        return;
+      }
+
+      // Nominatim Live Geocoding
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
+        const data = await res.json();
+        if (data && data.length > 0) {
+          const first = data[0];
+          const name = first.display_name.split(',')[0];
+          selectLocation(name, parseFloat(first.lat), parseFloat(first.lon), "GEOCODED");
+          return;
+        }
+      } catch (e) {
+        console.warn("Geocoding failed:", e);
+      }
+    }
+
+    function executeMissionSearch() {
+      executeSearchForView('mission');
+    }
+
+    function executeWorkspaceSearch() {
+      executeSearchForView('workspace');
+    }
+
     function selectLocation(name, lat, lon, mgrs) {
       currentLat = lat;
       currentLon = lon;
@@ -2619,20 +2673,19 @@
       if (typeof THREE.OrbitControls !== 'undefined') {
         threeControls = new THREE.OrbitControls(threeCamera, canvas);
         threeControls.enableDamping = true;
-        threeControls.dampingFactor = 0.08;
-        threeControls.rotateSpeed = 0.85;
-        threeControls.zoomSpeed = 1.1;
-        threeControls.minDistance = 2.08; // High-detail atmospheric entry limit (Globe radius = 2.0)
-        threeControls.maxDistance = 14.0; // Deep space orbit
-        threeControls.enablePan = true;
-        threeControls.panSpeed = 0.8;
-        threeControls.screenSpacePanning = true;
+        threeControls.dampingFactor = 0.06;
+        threeControls.rotateSpeed = 0.9;
+        threeControls.zoomSpeed = 1.2;
+        threeControls.minDistance = 2.05; // High-detail atmospheric entry limit (Globe radius = 2.0)
+        threeControls.maxDistance = 16.0; // Deep space orbit
+        threeControls.enablePan = false;  // Prevents Earth from ever being panned off-screen or stuck
         threeControls.autoRotate = true;
         threeControls.autoRotateSpeed = 0.4;
 
-        // Zero-sticking guarantee: manual user interaction immediately yields control
+        // Zero-sticking guarantee: manual user interaction immediately yields 100% control
         threeControls.addEventListener('start', () => {
           if (activeFlyTo) activeFlyTo = null;
+          threeControls.enabled = true;
           threeControls.autoRotate = false;
         });
 
@@ -2646,12 +2699,21 @@
         });
       }
 
+      // Pointerdown on canvas guarantees immediate priority for cursor rotation
+      canvas.addEventListener('pointerdown', () => {
+        if (activeFlyTo) activeFlyTo = null;
+        if (threeControls) {
+          threeControls.enabled = true;
+          threeControls.autoRotate = false;
+        }
+      });
+
       // Space-to-Land Seamless Wheel Zoom Listener (Scroll up to zoom from space into land)
       canvas.addEventListener('wheel', (e) => {
         if (!threeCamera || !threeControls) return;
         const dist = threeCamera.position.distanceTo(threeControls.target);
-        // If scrolling forward (zooming into Earth) and entering atmospheric threshold
-        if (e.deltaY < 0 && dist <= 2.22) {
+        // If scrolling forward (zooming into Earth) and entering atmospheric threshold (dist <= 2.18)
+        if (e.deltaY < 0 && dist <= 2.18) {
           triggerSpaceToLandDescent();
         }
       }, { passive: true });
@@ -3001,11 +3063,16 @@
           if (titleEl) titleEl.innerText = `Active Tactical Zone: ${activeFlyTo.name}`;
 
           activeFlyTo = null;
-          // Smoothly resume gentle auto-rotation after 2.5 seconds
+          // Re-enable controls immediately so user can navigate with cursor
+          if (threeControls) {
+            threeControls.enabled = true;
+          }
+
+          // Smoothly resume gentle auto-rotation after 3.5 seconds of inactivity
           clearTimeout(window._orbitInactivityTimeout);
           window._orbitInactivityTimeout = setTimeout(() => {
             if (threeControls && !activeFlyTo) threeControls.autoRotate = true;
-          }, 2500);
+          }, 3500);
         }
       } else if (targetCameraPosition && targetControlsLookAt) {
         threeCamera.position.lerp(targetCameraPosition, 0.05);
@@ -3018,7 +3085,8 @@
         }
       }
 
-      if (threeControls) {
+      // Update OrbitControls only when manual navigation is active
+      if (threeControls && threeControls.enabled && !activeFlyTo) {
         threeControls.update();
       }
 
@@ -3052,8 +3120,12 @@
       if (!threeCamera || !threeControls) return;
 
       const earthRadius = 2.0;
-      const targetPos = geoToVector3(targetLat, targetLon, earthRadius + targetAltitude);
-      const targetLook = geoToVector3(targetLat, targetLon, earthRadius);
+      // Account for earthGroup's current axial spin angle
+      const spinDeg = earthGroup ? (earthGroup.rotation.y * 180 / Math.PI) : 0;
+      const targetWorldLon = targetLon + spinDeg;
+
+      const targetPos = geoToVector3(targetLat, targetWorldLon, earthRadius + targetAltitude);
+      const targetLook = new THREE.Vector3(0, 0, 0); // Always center on Earth
 
       const startPos = threeCamera.position.clone();
       const startLook = threeControls.target.clone();
@@ -3063,9 +3135,10 @@
       const angularDist = startDir.angleTo(targetDir);
 
       // Parabolic apex pullback height proportional to distance
-      const apexHeight = Math.min(2.8, 0.4 + (angularDist / Math.PI) * 2.4);
+      const apexHeight = Math.min(3.2, 0.45 + (angularDist / Math.PI) * 2.6);
 
-      // Temporarily halt auto-rotation during cinematic flight
+      // Temporarily halt OrbitControls during cinematic flight
+      threeControls.enabled = false;
       threeControls.autoRotate = false;
 
       const titleEl = document.getElementById('current-aoi-title');
@@ -3073,17 +3146,22 @@
         titleEl.innerText = `Hypersonic Orbital Swoop // ${locationName}`;
       }
 
+      const mBadge = document.getElementById('mission-target-badge');
+      if (mBadge) {
+        mBadge.innerText = `TARGET: ${locationName.toUpperCase()}`;
+      }
+
       // Show brief optical streak burst
       const fx = document.getElementById('hypersonic-fx-overlay');
       const fxText = document.getElementById('hypersonic-fx-text');
-      if (fx && angularDist > 0.4) {
+      if (fx && angularDist > 0.3) {
         if (fxText) fxText.innerText = `HYPERSONIC ORBITAL FLIGHT // ${locationName.toUpperCase()}`;
         fx.classList.remove('hidden');
-        fx.style.opacity = '0.85';
+        fx.style.opacity = '0.88';
         setTimeout(() => {
           fx.style.opacity = '0';
           setTimeout(() => { fx.classList.add('hidden'); }, 400);
-        }, 800);
+        }, 850);
       }
 
       activeFlyTo = {
@@ -3161,6 +3239,7 @@
 
           switchTab('workspace');
           currentZoom = 15; // High resolution sub-meter satellite zoom
+          setDimensionMode('3d');
           renderSatelliteTiles();
           isTransitioningSpaceToLand = false;
         }
