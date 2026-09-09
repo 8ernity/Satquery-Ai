@@ -29,6 +29,24 @@
 
 ---
 
+## 📖 About BHUVISION
+
+> **BHUVISION** is an autonomous multi-agent spatial intelligence platform engineered for **Smart India Hackathon 2026 (Problem SIH26167)** under **ISRO mentorship**. It combines **C-Band Synthetic Aperture Radar (SAR)** with **sub-meter optical imagery** to deliver verified, zero-hallucination Earth intelligence through a council of 9 specialized AI agents. Even when monsoon storms blanket 80% of India in dense clouds, BHUVISION shoots microwaves straight through the weather to map flash floods, measure flooded hectares, detect urban infrastructure expansion, and calculate live emergency evacuation detours in under 1.2 seconds.
+
+### 📌 GitHub Repository Factsheet & About Section
+| Attribute | Specification |
+| :--- | :--- |
+| **Project Title** | **BHUVISION // SatQuery AI** |
+| **Short Description** | Autonomous Multi-Agent Earth Intelligence Platform for Multimodal Remote Sensing (SIH26167 // ISRO). Powered by 9 specialized AI agents, 3D WebGL cockpit, cloud-piercing SAR radar, sub-meter bi-temporal change detection, and zero-hallucination Graph-of-Thought debate. |
+| **Website & Cockpit** | `http://127.0.0.1:8000/app` (Local Cockpit) • `https://github.com/Ayushnot41/Satquery-Ai` (Repo) |
+| **Hackathon & Theme** | Smart India Hackathon 2026 • Space Technology • Problem Statement SIH26167 |
+| **Mentoring Agency** | Indian Space Research Organisation (ISRO) |
+| **Team & Lead** | Team BANKAI • Ayush Sarkar ([@Ayushnot41](https://github.com/Ayushnot41)) |
+| **Core Capabilities** | All-weather microwave cloud penetration, 9-agent autonomous debate, 3D building extrusions ($0^\circ-75^\circ$ tilt), bi-temporal change detection, live traffic routing |
+| **GitHub Topics / Tags** | `remote-sensing` `synthetic-aperture-radar` `sar` `multi-agent-systems` `earth-observation` `threejs` `fastapi` `isro` `smart-india-hackathon-2026` `computer-vision` `geospatial` `satellite-imagery` `graph-of-thought` `webgl` `gis` `bhuvan` |
+
+---
+
 ## 🌟 What is BHUVISION? (Explained in 30 Seconds)
 
 > 💡 **The Simple Analogy:**  
@@ -250,6 +268,57 @@ $$\text{Area} = \frac{1}{2} R^2 \cdot \left| \sum_{i=1}^{n} (\lambda_{i+1} - \la
 ### 3. Universal GeoJSON Export (`GET /api/investigate/{id}/geojson`)
 * Exports the entire 9-agent investigation dossier as an open RFC 7946 standard GeoJSON file.
 * Directly importable into **ISRO Bhuvan**, **QGIS**, **ArcGIS Pro**, and **Google Earth Pro**.
+
+---
+
+## 🛡️ Authentication & Government Security Clearance Tiers
+
+To safeguard sensitive disaster corridors and national infrastructure telemetry, BHUVISION includes a native 4-tier security clearance directory with multi-factor verification:
+
+| Clearance Level | Title & Scope | Permissions & Features Unlocked |
+| :---: | :--- | :--- |
+| **Level 1** | **Public Observer** | Standard Nadir 2D optical basemaps, public scenario views, and read-only telemetry. |
+| **Level 2** | **Confidential Analyst** | Bi-temporal change detection, NDVI crop health, and WGS-84 spherical area measurement. |
+| **Level 3** | **Secret Operations** | Cloud-piercing SAR microwave radar, live traffic congestion vectors, and emergency evacuation routing. |
+| **Level 4** | **Top Secret Commander** | 9-Agent autonomous council override, real-time VLM CoT debate, and high-frequency orbital downlink simulation. |
+
+* **Verification Methods:** Google OAuth 2.0 PKCE, Email/Password cryptographic sessions, and Phone SMS 6-digit OTP verification. Full configuration guide at [`docs/PRODUCTION_DEPLOYMENT_GUIDE.md`](docs/PRODUCTION_DEPLOYMENT_GUIDE.md).
+
+---
+
+## 📁 Project Directory Structure
+
+```
+Satquery-Ai/
+├── assets/                               # 4K vector-sharp, hardware-accelerated 3D SVGs
+│   ├── bhuvision_3d_banner.svg           # Hero 3D orbital space engine banner
+│   ├── earth_3d_orbit_constellation.svg  # 3D satellite constellation map over India
+│   ├── architecture_3d_pipeline.svg      # 3-Tier isometric system topology diagram
+│   ├── temporal_bitemporal_3d_cockpit.svg# Dual-dimension cockpit ($75°$ oblique tilt)
+│   ├── multi_agent_got_council.svg       # 9-Agent Graph-of-Thought deliberation core
+│   ├── agent_debate_matrix_3d.svg        # 3D Council debate matrix & truth rules
+│   ├── sar_radar_physics_spectrum.svg    # Microwave radar reflectance spectrum
+│   └── sar_3d_backscatter_mesh.svg       # 3D topological backscatter surface graph
+├── backend/                              # Defense-grade FastAPI asynchronous core
+│   ├── app/
+│   │   ├── api/                          # REST endpoints (auth, investigate, spectral, geojson)
+│   │   ├── core/                         # Configuration, logging, and security clearance
+│   │   ├── schemas/                      # Pydantic validation models and RFC GeoJSON schemas
+│   │   ├── services/                     # 9 autonomous agents, SAR engine, and CV differencing
+│   │   └── main.py                       # ASGI entrypoint mounting all routers and static assets
+│   ├── data/demo/                        # Real-world satellite ground-truth benchmark datasets
+│   └── tests/                            # Automated Pytest suite (43/43 passing)
+│       ├── test_agents.py                # Unit tests for all 9 specialist agents
+│       ├── test_api.py                   # Integration tests for REST APIs & auth workflows
+│       └── test_svg_assets_validity.py   # XML well-formedness & reference integrity validators
+├── docs/                                 # Comprehensive technical documentation
+│   ├── API_KEYS_GUIDE.md                 # Setup guide for Google Maps, MapTiler, NASA GIBS
+│   ├── PRODUCTION_DEPLOYMENT_GUIDE.md    # Docker, PaaS (Render), Nginx SSL, and PWA guide
+│   └── SYSTEM_SPECIFICATION.md           # Defense-grade mathematical and spatial specification
+├── bhuvision_preview.html                # Standalone WebGL 3D Cockpit & God's Eye Earth View
+├── manifest.json                         # PWA Progressive Web App standalone mobile manifest
+└── README.md                             # Primary project specification & quickstart
+```
 
 ---
 

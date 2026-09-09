@@ -75,13 +75,13 @@ class GoogleAuthRequest(BaseModel):
 
 
 class SendOtpRequest(BaseModel):
-    phone: str = Field(..., min_length=10, max_length=16, example="+919876543210")
+    phone: str = Field(..., min_length=10, max_length=16, json_schema_extra={"example": "+919876543210"})
     purpose: Literal["login", "verification", "clearance"] = "verification"
 
 
 class VerifyOtpRequest(BaseModel):
-    phone: str = Field(..., example="+919876543210")
-    otp: str = Field(..., min_length=6, max_length=6, example="849201")
+    phone: str = Field(..., json_schema_extra={"example": "+919876543210"})
+    otp: str = Field(..., min_length=6, max_length=6, json_schema_extra={"example": "849201"})
 
 
 class AuthTokenResponse(BaseModel):

@@ -370,6 +370,18 @@
         <!-- Interactive 3D Canvas -->
         <canvas id="globe-3d-canvas" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"></canvas>
 
+        <!-- Hypersonic Re-entry & Orbital Swoop FX Overlay -->
+        <div id="hypersonic-fx-overlay" class="hidden absolute inset-0 z-30 pointer-events-none flex flex-col items-center justify-center transition-all duration-300"
+             style="background: radial-gradient(circle at center, transparent 35%, rgba(6, 182, 212, 0.2) 80%, rgba(59, 130, 246, 0.4) 100%);">
+          <div class="w-48 h-48 rounded-full border border-cyan-400/60 animate-ping opacity-75"></div>
+          <div class="mt-4 px-5 py-2.5 bg-black/90 backdrop-blur-md rounded-xl border border-cyan-500/60 shadow-[0_0_30px_rgba(6,182,212,0.6)] text-center">
+            <div class="text-xs font-mono font-bold text-cyan-300 tracking-widest animate-pulse" id="hypersonic-fx-text">
+              HYPERSONIC ORBITAL FLIGHT // SATELLITE RADAR LOCK
+            </div>
+            <div class="text-[10px] font-mono text-gray-400 mt-1">SPACE-TO-LAND PARABOLIC TRAJECTORY ENGAGED</div>
+          </div>
+        </div>
+
         <!-- CRT Scanlines Overlay -->
         <div id="crt-overlay" class="absolute inset-0 pointer-events-none opacity-25 z-10 crt-scanlines"></div>
 
@@ -602,8 +614,11 @@
 
             <!-- Zoom Controls & Compass -->
             <div class="absolute right-4 top-16 z-30 flex flex-col gap-1.5 bg-black/85 backdrop-blur-md p-1.5 rounded-xl border border-white/10 shadow-xl">
-              <button onclick="zoomSatellite(1)" class="w-8 h-8 rounded-lg bg-gray-900/80 hover:bg-cyan-900/60 text-white flex items-center justify-center text-sm font-bold border border-white/10 cursor-pointer transition-colors">+</button>
-              <button onclick="zoomSatellite(-1)" class="w-8 h-8 rounded-lg bg-gray-900/80 hover:bg-cyan-900/60 text-white flex items-center justify-center text-sm font-bold border border-white/10 cursor-pointer transition-colors">&minus;</button>
+              <button onclick="zoomSatellite(1)" class="w-8 h-8 rounded-lg bg-gray-900/80 hover:bg-cyan-900/60 text-white flex items-center justify-center text-sm font-bold border border-white/10 cursor-pointer transition-colors" title="Zoom In Satellite">+</button>
+              <button onclick="zoomSatellite(-1)" class="w-8 h-8 rounded-lg bg-gray-900/80 hover:bg-cyan-900/60 text-white flex items-center justify-center text-sm font-bold border border-white/10 cursor-pointer transition-colors" title="Zoom Out Satellite">&minus;</button>
+              <button onclick="ascendToOrbitView()" class="w-8 h-8 rounded-lg bg-indigo-950/90 hover:bg-indigo-900 text-cyan-300 flex items-center justify-center text-xs border border-indigo-500/50 cursor-pointer transition-all shadow" title="Ascend to 3D Orbit (Space View)">
+                <svg class="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+              </button>
               <div class="w-8 h-8 rounded-lg bg-[#0C1527] border border-cyan-500/40 flex items-center justify-center text-cyan-300 text-[10px] font-mono font-bold">N</div>
             </div>
 
@@ -1527,6 +1542,10 @@
     }
 
     function zoomSatellite(delta) {
+      if (delta < 0 && currentZoom <= 8) {
+        ascendToOrbitView();
+        return;
+      }
       currentZoom = Math.min(18, Math.max(8, currentZoom + delta));
       renderSatelliteTiles();
     }
@@ -2160,6 +2179,18 @@
       return new THREE.Vector3(x, y, z);
     }
 
+    // Inverse conversion: 3D Cartesian coordinates on sphere back to Lat/Lon
+    function vector3ToGeo(vec) {
+      const norm = vec.clone().normalize();
+      const phi = Math.acos(Math.max(-1, Math.min(1, norm.y)));
+      const lat = 90 - (phi * 180 / Math.PI);
+      const theta = Math.atan2(norm.z, -norm.x);
+      let lon = (theta * 180 / Math.PI) - 180;
+      while (lon < -180) lon += 360;
+      while (lon > 180) lon -= 360;
+      return { lat, lon };
+    }
+
     function init3DGlobeThree() {
       const canvas = document.getElementById('globe-3d-canvas');
       if (!canvas || isThreeInitialized) return;
@@ -2187,21 +2218,65 @@
       threeRenderer.toneMapping = THREE.ACESFilmicToneMapping;
       threeRenderer.toneMappingExposure = 1.15;
 
-      // 3. Orbit Controls with Silky Smooth 3D Motion
+      // 3. Orbit Controls with Silky Smooth 3D Motion (Zero-Sticking Architecture)
       if (typeof THREE.OrbitControls !== 'undefined') {
         threeControls = new THREE.OrbitControls(threeCamera, canvas);
         threeControls.enableDamping = true;
-        threeControls.dampingFactor = 0.05;
-        threeControls.rotateSpeed = 0.7;
-        threeControls.zoomSpeed = 0.85;
-        threeControls.minDistance = 2.3;
-        threeControls.maxDistance = 12.0;
+        threeControls.dampingFactor = 0.08;
+        threeControls.rotateSpeed = 0.85;
+        threeControls.zoomSpeed = 1.1;
+        threeControls.minDistance = 2.08; // High-detail atmospheric entry limit (Globe radius = 2.0)
+        threeControls.maxDistance = 14.0; // Deep space orbit
         threeControls.enablePan = true;
         threeControls.panSpeed = 0.8;
         threeControls.screenSpacePanning = true;
         threeControls.autoRotate = true;
-        threeControls.autoRotateSpeed = 0.5; // Smooth automatic orbital drift
+        threeControls.autoRotateSpeed = 0.4;
+
+        // Zero-sticking guarantee: manual user interaction immediately yields control
+        threeControls.addEventListener('start', () => {
+          if (activeFlyTo) activeFlyTo = null;
+          threeControls.autoRotate = false;
+        });
+
+        threeControls.addEventListener('end', () => {
+          clearTimeout(window._orbitInactivityTimeout);
+          window._orbitInactivityTimeout = setTimeout(() => {
+            if (threeControls && !activeFlyTo) {
+              threeControls.autoRotate = true;
+            }
+          }, 3500);
+        });
       }
+
+      // Space-to-Land Seamless Wheel Zoom Listener (Scroll up to zoom from space into land)
+      canvas.addEventListener('wheel', (e) => {
+        if (!threeCamera || !threeControls) return;
+        const dist = threeCamera.position.distanceTo(threeControls.target);
+        // If scrolling forward (zooming into Earth) and entering atmospheric threshold
+        if (e.deltaY < 0 && dist <= 2.22) {
+          triggerSpaceToLandDescent();
+        }
+      }, { passive: true });
+
+      // Double-Click Anywhere on 3D Earth to Fly Directly to That Location
+      const raycaster = new THREE.Raycaster();
+      const mouseVec = new THREE.Vector2();
+
+      canvas.addEventListener('dblclick', (event) => {
+        const rect = canvas.getBoundingClientRect();
+        mouseVec.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouseVec.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(mouseVec, threeCamera);
+        const intersects = raycaster.intersectObjects(earthGroup ? earthGroup.children : [], true);
+        if (intersects.length > 0) {
+          const hit = intersects[0].point;
+          const geo = vector3ToGeo(hit);
+          const spotName = `${geo.lat >= 0 ? geo.lat.toFixed(2) + '°N' : Math.abs(geo.lat).toFixed(2) + '°S'}, ${geo.lon >= 0 ? geo.lon.toFixed(2) + '°E' : Math.abs(geo.lon).toFixed(2) + '°W'}`;
+          selectLocation(spotName, geo.lat, geo.lon, "SPATIAL_LOCK_3D");
+        }
+      });
 
       // 4. Lighting Rig
       const ambientLight = new THREE.AmbientLight(0x334466, 0.65);
@@ -2486,8 +2561,56 @@
         sat.group.lookAt(0, 0, 0); // Always point payload towards Earth center
       });
 
-      // 5. Smooth Camera Flight Interpolation (flyToLocation)
-      if (targetCameraPosition && targetControlsLookAt) {
+      // 5. Google Earth-Style Cinematic Great-Circle Parabolic Flight
+      if (activeFlyTo) {
+        const now = performance.now();
+        const elapsed = now - activeFlyTo.startTime;
+        const progress = Math.min(1.0, elapsed / activeFlyTo.duration);
+
+        // Smooth cubic easeInOut curve
+        const t = progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+        // Spherical Great-Circle Direction Vector (Quaternion SLERP)
+        const currentDir = new THREE.Vector3();
+        if (activeFlyTo.angularDist > 0.002) {
+          const qStart = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), activeFlyTo.startDir);
+          const qTarget = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), activeFlyTo.targetDir);
+          const qCurrent = new THREE.Quaternion().copy(qStart).slerp(qTarget, t);
+          currentDir.set(0, 1, 0).applyQuaternion(qCurrent);
+        } else {
+          currentDir.copy(activeFlyTo.targetDir);
+        }
+
+        // Parabolic altitude arc: pulls back into deep space, then swoops down into atmosphere
+        const parabolicAltitude = Math.sin(t * Math.PI) * activeFlyTo.apexHeight;
+        const currentRadius = (activeFlyTo.startRadius + (activeFlyTo.targetRadius - activeFlyTo.startRadius) * t) + parabolicAltitude;
+
+        threeCamera.position.copy(currentDir.multiplyScalar(currentRadius));
+        threeControls.target.lerpVectors(activeFlyTo.startLook, activeFlyTo.targetLook, t);
+
+        // Real-time altitude telemetry readout in HUD
+        updateAltitudeHUD(currentRadius);
+
+        // Real-time compass bearing tape update
+        updateHeadingTapeFromCamera();
+
+        if (progress >= 1.0) {
+          threeCamera.position.copy(activeFlyTo.targetPos);
+          threeControls.target.copy(activeFlyTo.targetLook);
+
+          const titleEl = document.getElementById('current-aoi-title');
+          if (titleEl) titleEl.innerText = `Active Tactical Zone: ${activeFlyTo.name}`;
+
+          activeFlyTo = null;
+          // Smoothly resume gentle auto-rotation after 2.5 seconds
+          clearTimeout(window._orbitInactivityTimeout);
+          window._orbitInactivityTimeout = setTimeout(() => {
+            if (threeControls && !activeFlyTo) threeControls.autoRotate = true;
+          }, 2500);
+        }
+      } else if (targetCameraPosition && targetControlsLookAt) {
         threeCamera.position.lerp(targetCameraPosition, 0.05);
         if (threeControls) {
           threeControls.target.lerp(targetControlsLookAt, 0.05);
@@ -2522,15 +2645,141 @@
       }
     }
 
+    // ============================================================================
+    // GOOGLE EARTH-STYLE CINEMATIC PARABOLIC FLY-TO & SPACE-TO-LAND ENGINE
+    // ============================================================================
+    let activeFlyTo = null;
+    let isTransitioningSpaceToLand = false;
+
+    function flyToLocationGoogleEarth(targetLat, targetLon, locationName, targetAltitude = 1.35, durationMs = 2400) {
+      if (!threeCamera || !threeControls) return;
+
+      const earthRadius = 2.0;
+      const targetPos = geoToVector3(targetLat, targetLon, earthRadius + targetAltitude);
+      const targetLook = geoToVector3(targetLat, targetLon, earthRadius);
+
+      const startPos = threeCamera.position.clone();
+      const startLook = threeControls.target.clone();
+
+      const startDir = startPos.clone().normalize();
+      const targetDir = targetPos.clone().normalize();
+      const angularDist = startDir.angleTo(targetDir);
+
+      // Parabolic apex pullback height proportional to distance
+      const apexHeight = Math.min(2.8, 0.4 + (angularDist / Math.PI) * 2.4);
+
+      // Temporarily halt auto-rotation during cinematic flight
+      threeControls.autoRotate = false;
+
+      const titleEl = document.getElementById('current-aoi-title');
+      if (titleEl) {
+        titleEl.innerText = `Hypersonic Orbital Swoop // ${locationName}`;
+      }
+
+      // Show brief optical streak burst
+      const fx = document.getElementById('hypersonic-fx-overlay');
+      const fxText = document.getElementById('hypersonic-fx-text');
+      if (fx && angularDist > 0.4) {
+        if (fxText) fxText.innerText = `HYPERSONIC ORBITAL FLIGHT // ${locationName.toUpperCase()}`;
+        fx.classList.remove('hidden');
+        fx.style.opacity = '0.85';
+        setTimeout(() => {
+          fx.style.opacity = '0';
+          setTimeout(() => { fx.classList.add('hidden'); }, 400);
+        }, 800);
+      }
+
+      activeFlyTo = {
+        startTime: performance.now(),
+        duration: durationMs,
+        startPos: startPos,
+        targetPos: targetPos,
+        startLook: startLook,
+        targetLook: targetLook,
+        startDir: startDir,
+        targetDir: targetDir,
+        startRadius: startPos.length(),
+        targetRadius: targetPos.length(),
+        angularDist: angularDist,
+        apexHeight: apexHeight,
+        name: locationName,
+        lat: targetLat,
+        lon: targetLon
+      };
+    }
+
+    function updateAltitudeHUD(radius) {
+      const altKm = Math.round(Math.max(25, (radius - 2.0) * 12742));
+      const badge = document.getElementById('reticle-nw');
+      if (badge) {
+        badge.innerText = `ALTITUDE: ${altKm.toLocaleString()} KM // LEO LOCK`;
+      }
+    }
+
+    function updateHeadingTapeFromCamera() {
+      if (!threeCamera) return;
+      const headingTape = document.getElementById('heading-tape-display');
+      if (!headingTape) return;
+      const angleRad = Math.atan2(threeCamera.position.x, threeCamera.position.z);
+      const deg = Math.round((angleRad * 180 / Math.PI) + 360) % 360;
+      headingTape.innerText = `[ ${deg.toString().padStart(3, '0')}° AZIMUTH ]`;
+    }
+
+    function triggerSpaceToLandDescent() {
+      if (isTransitioningSpaceToLand) return;
+      isTransitioningSpaceToLand = true;
+
+      const fx = document.getElementById('hypersonic-fx-overlay');
+      const text = document.getElementById('hypersonic-fx-text');
+      if (fx) {
+        fx.classList.remove('hidden');
+        fx.style.opacity = '1';
+        if (text) text.innerText = `ATMOSPHERIC RE-ENTRY // DESCENDING TO ${currentLocationName.toUpperCase()}`;
+      }
+
+      // Smooth camera plunge towards the target coordinate
+      const earthRadius = 2.0;
+      const surfacePos = geoToVector3(currentLat, currentLon, earthRadius + 0.05);
+
+      let plungeProgress = 0;
+      const plungeInterval = setInterval(() => {
+        plungeProgress += 0.08;
+        if (threeCamera) {
+          threeCamera.position.lerp(surfacePos, 0.15);
+          threeCamera.fov = Math.max(22, threeCamera.fov - 1.6);
+          threeCamera.updateProjectionMatrix();
+        }
+
+        if (plungeProgress >= 1.0) {
+          clearInterval(plungeInterval);
+          if (fx) {
+            fx.style.opacity = '0';
+            setTimeout(() => { fx.classList.add('hidden'); }, 400);
+          }
+
+          if (threeCamera) {
+            threeCamera.fov = 42;
+            threeCamera.updateProjectionMatrix();
+          }
+
+          switchTab('workspace');
+          currentZoom = 15; // High resolution sub-meter satellite zoom
+          renderSatelliteTiles();
+          isTransitioningSpaceToLand = false;
+        }
+      }, 30);
+    }
+
+    function ascendToOrbitView() {
+      switchTab('mission');
+      resize3DCanvas();
+      flyToLocationGoogleEarth(currentLat, currentLon, currentLocationName, 3.2, 1600);
+    }
+
     function resetIndiaFocus() {
-      // Center India (lat 20, lon 78) squarely in the view
       if (!earthGroup) return;
       earthGroup.rotation.set(0, 0, 0);
-      
-      const targetLook = new THREE.Vector3(0, 0, 0);
-      const targetCam = geoToVector3(20, 78, 4.8);
-      targetCameraPosition = targetCam;
-      targetControlsLookAt = targetLook;
+      flyToLocationGoogleEarth(20, 78, "India Subcontinent Center", 2.8, 1800);
     }
 
     function focusAOI(key) {
@@ -2541,15 +2790,7 @@
     function focusAOICoords(lat, lon, name) {
       const titleEl = document.getElementById('current-aoi-title');
       if (titleEl) titleEl.innerText = `Active Tactical Zone: ${name}`;
-
-      // Smooth camera fly-to animation in 3D space
-      const earthRadius = 2.0;
-      const altitude = 1.35; // Close orbital surveillance distance
-      const camPos = geoToVector3(lat, lon, earthRadius + altitude);
-      const lookAt = geoToVector3(lat, lon, earthRadius);
-
-      targetCameraPosition = camPos;
-      targetControlsLookAt = lookAt;
+      flyToLocationGoogleEarth(lat, lon, name, 1.35, 2200);
     }
 
     function launchTargetInWorkspace() {
