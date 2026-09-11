@@ -110,9 +110,57 @@ app.include_router(nasa_tile_router, prefix="/api")
 app.include_router(auth_router, prefix="/api")
 
 
-@app.get("/", tags=["Root"])
-async def get_root():
-    """System banner and metadata."""
+def _get_app_html_file() -> Path | None:
+    """Find the production application HTML file, checking preview then index."""
+    root = Path(__file__).resolve().parents[2]
+    for filename in ["bhuvision_preview.html", "index.html"]:
+        candidate = root / filename
+        if candidate.exists():
+            return candidate
+    return None
+
+
+@app.api_route("/", methods=["GET", "HEAD"], tags=["Frontend Application"])
+@app.api_route("/app", methods=["GET", "HEAD"], tags=["Frontend Application"])
+@app.api_route("/index.html", methods=["GET", "HEAD"], tags=["Frontend Application"])
+@app.api_route("/preview", methods=["GET", "HEAD"], tags=["Frontend Application"])
+async def get_interactive_app(request: Request):
+    """Serves the complete production-level BHUVISION 3D Earth & Surveillance Cockpit."""
+    # If client is requesting root "/" without text/html (e.g. API test client, curl), return JSON metadata
+    accept = request.headers.get("accept", "")
+    if request.url.path == "/" and "text/html" not in accept:
+        return JSONResponse({
+            "product": "BHUVISION",
+            "tagline": "Ask the Earth. AI decides how to investigate it.",
+            "problem_statement_id": "SIH26167",
+            "organization": "Indian Space Research Organisation (ISRO)",
+            "team": "BANKAI",
+            "version": settings.app_version,
+            "app_url": "/app",
+            "docs_url": "/docs",
+            "health_url": "/api/health",
+            "status": "online",
+            "agents": 9,
+        })
+
+    app_file = _get_app_html_file()
+    if app_file and app_file.exists():
+        return FileResponse(app_file, media_type="text/html")
+    return JSONResponse(status_code=404, content={"error": "Application file not found"})
+
+
+@app.get("/manifest.json", tags=["PWA"])
+async def get_manifest():
+    """Serves the Progressive Web App (PWA) manifest."""
+    manifest_file = Path(__file__).resolve().parents[2] / "manifest.json"
+    if manifest_file.exists():
+        return FileResponse(manifest_file, media_type="application/manifest+json")
+    return {"name": "BHUVISION", "short_name": "BHUVISION"}
+
+
+@app.get("/api/info", tags=["Root"])
+async def get_system_info():
+    """System banner and metadata endpoint."""
     return {
         "product": "BHUVISION",
         "tagline": "Ask the Earth. AI decides how to investigate it.",
@@ -126,25 +174,6 @@ async def get_root():
         "status": "online",
         "agents": 9,
     }
-
-
-@app.get("/manifest.json", tags=["PWA"])
-async def get_manifest():
-    """Serves the Progressive Web App (PWA) manifest."""
-    manifest_file = Path(__file__).resolve().parents[2] / "manifest.json"
-    if manifest_file.exists():
-        return FileResponse(manifest_file, media_type="application/manifest+json")
-    return {"name": "BHUVISION", "short_name": "BHUVISION"}
-
-
-@app.api_route("/app", methods=["GET", "HEAD"], tags=["Frontend Application"])
-@app.api_route("/preview", methods=["GET", "HEAD"], tags=["Frontend Application"])
-async def get_interactive_app():
-    """Serves the complete production-level BHUVISION 3D Earth & Surveillance Cockpit."""
-    preview_file = Path(__file__).resolve().parents[2] / "bhuvision_preview.html"
-    if preview_file.exists():
-        return FileResponse(preview_file, media_type="text/html")
-    return {"error": "Application file not found", "path": str(preview_file)}
 
 
 @app.api_route("/api/download/deployment-manual", methods=["GET", "HEAD"], tags=["Documentation"])
