@@ -258,6 +258,7 @@ class AgentDebateSession(BaseModel):
 
 
 @router.get("/debate", response_model=AgentDebateSession)
+@router.get("/agent-debate", response_model=AgentDebateSession)
 async def get_agent_debate_protocol(
     scenario: str = Query("monsoon_flood", description="Scenario type: monsoon_flood, urban_shadow, or landslide"),
     target_location: str = Query("Brahmaputra Valley, Assam")
