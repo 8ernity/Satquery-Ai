@@ -23,7 +23,22 @@ import time
 
 import numpy as np
 import re
+import socket
+from urllib.parse import urlparse
 from PIL import Image
+
+def _is_gateway_reachable(base_url: str) -> bool:
+    """Fast non-blocking probe for localhost / LAN services to avoid socket timeout lags."""
+    try:
+        parsed = urlparse(base_url)
+        host = parsed.hostname or "localhost"
+        port = parsed.port or (443 if parsed.scheme == "https" else 80)
+        if host in ("localhost", "127.0.0.1", "::1"):
+            with socket.create_connection((host, port), timeout=0.15):
+                return True
+        return True
+    except (OSError, ConnectionRefusedError):
+        return False
 
 from ..core.config import settings
 from ..core.logging import get_logger
@@ -91,10 +106,11 @@ class GatewayBackend(VLMBackend):
         key = gateway["name"]
         if key not in self._clients:
             from openai import AsyncOpenAI
+            import httpx
             self._clients[key] = AsyncOpenAI(
                 base_url=gateway["base_url"],
                 api_key=gateway["api_key"],
-                timeout=8.0,
+                timeout=httpx.Timeout(timeout=5.0, connect=1.2),
             )
         return self._clients[key]
 
@@ -168,6 +184,9 @@ class GatewayBackend(VLMBackend):
 
         for gw in _GATEWAYS:
             if not gw["enabled"]:
+                continue
+            if not _is_gateway_reachable(gw["base_url"]):
+                logger.debug("gateway_skipped_unreachable", gateway=gw["name"], base_url=gw["base_url"])
                 continue
             try:
                 start = time.time()
