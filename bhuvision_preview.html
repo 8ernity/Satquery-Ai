@@ -637,66 +637,71 @@
         <div class="lg:col-span-7 flex flex-col" id="viewport-column">
           <div id="satellite-viewport-box" class="relative w-full h-[540px] bg-[#030611] rounded-xl overflow-hidden border border-[#1F2937] shadow-2xl flex flex-col cursor-grab active:cursor-grabbing perspective-stage">
             
-            <!-- Telemetry Strip -->
-            <div class="absolute top-3 left-3 z-30 flex items-center gap-2 bg-black/85 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10 text-[11px] font-mono text-gray-300 shadow-xl">
-              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-              <span id="sensor-badge" class="text-white font-bold uppercase">ESRI WORLD IMAGERY (0.5m GSD)</span>
-              <span class="text-gray-500">|</span>
-              <span id="viewport-dimension-badge" class="text-cyan-300 font-bold">2D NADIR</span>
-              <span class="text-gray-500">|</span>
-              <span id="viewport-zoom-label" class="text-emerald-300 font-bold">ZOOM: 14X</span>
-            </div>
+            <!-- Top Responsive Map Control & Sensor Toolbar with Animated Horizontal Slider -->
+            <div class="absolute top-0 inset-x-0 z-35 bg-black/90 backdrop-blur-md border-b border-white/10 px-2 py-1.5 flex items-center gap-1.5 shadow-2xl select-none">
+              <!-- Left Slide Animation Arrow -->
+              <button onclick="slideMapControls(-220)" id="map-slider-prev" class="w-7 h-7 shrink-0 rounded-lg bg-[#070C18] hover:bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 flex items-center justify-center cursor-pointer transition-all hover:scale-105 active:scale-95 shadow font-bold text-sm" title="Slide left to reveal more map functions">
+                &#9664;
+              </button>
 
-            <!-- Layer & Traffic Controls -->
-            <div class="absolute top-3 right-3 z-30 flex items-center gap-1.5 bg-black/85 backdrop-blur-md p-1.5 rounded-xl border border-white/10 text-xs font-mono shadow-xl">
-              <button onclick="setSatelliteProvider('esri')" id="btn-prov-esri" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-blue-600 text-white cursor-pointer transition-colors shadow">
-                Optical
-              </button>
-              <button onclick="setSatelliteProvider('google')" id="btn-prov-google" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold text-gray-400 hover:text-white cursor-pointer transition-colors">
-                Google Maps
-              </button>
-              <button onclick="setSatelliteProvider('maptiler')" id="btn-prov-maptiler" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold text-gray-400 hover:text-white cursor-pointer transition-colors">
-                MapTiler 3D
-              </button>
-              <button onclick="setSatelliteProvider('nasa_gibs')" id="btn-prov-gibs" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold text-gray-400 hover:text-white cursor-pointer transition-colors">
-                NASA Live
-              </button>
-              <!-- NASA GIBS Layer Selector (visible when NASA Live is active) -->
-              <select id="nasa-layer-select" onchange="switchNasaLayer(this.value)" class="hidden px-2 py-1 rounded-lg text-[10px] font-mono bg-gray-900 text-amber-300 border border-amber-500/40 cursor-pointer transition-colors">
-                <option value="MODIS_Terra_CorrectedReflectance_TrueColor">True Color</option>
-                <option value="MODIS_Terra_CorrectedReflectance_Bands721">False Color (7-2-1)</option>
-                <option value="VIIRS_SNPP_DayNightBand_ENCC">Night Lights</option>
-                <option value="MODIS_Terra_NDVI_8Day">NDVI 8-Day</option>
-                <option value="MODIS_Terra_Aerosol">Aerosol AOD</option>
-              </select>
-              <button onclick="setSatelliteProvider('sar')" id="btn-prov-sar" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold text-gray-400 hover:text-white cursor-pointer transition-colors">
-                SAR Radar
-              </button>
-              <button onclick="toggleTopoJSONLayer()" id="btn-topojson" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold text-purple-300 hover:text-white border border-purple-500/30 cursor-pointer transition-colors">
-                Boundaries
-              </button>
-              <button onclick="toggleSpectralMode('ndvi')" id="btn-prov-ndvi" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold text-emerald-400 hover:text-white border border-emerald-500/30 cursor-pointer transition-colors">
-                NDVI
-              </button>
-              <button onclick="measureGeodesicArea()" id="btn-measure" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold text-cyan-300 hover:text-white border border-cyan-500/30 cursor-pointer transition-colors flex items-center gap-1">
-                <span>Measure</span>
-              </button>
-              <button onclick="toggleTrafficLayer()" id="btn-traffic" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-gray-900 text-gray-400 hover:text-white border border-white/10 cursor-pointer transition-colors">
-                Traffic: OFF
-              </button>
-              <button onclick="toggleOverlay()" id="btn-overlay" class="px-2.5 py-1 rounded-lg text-[11px] font-medium bg-emerald-950 text-emerald-300 border border-emerald-500/50 cursor-pointer">
-                Grounding: ON
-              </button>
-              <div class="flex items-center gap-1 bg-[#050811] px-2 py-0.5 rounded-lg border border-gray-800 text-[10px] font-mono ml-1">
-                <span class="text-gray-500 font-bold uppercase mr-0.5">Timeline:</span>
-                <button onclick="setTemporalTimeline('2023')" id="btn-timeline-2023" class="px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/50 font-bold cursor-pointer transition-all">2023 Baseline</button>
-                <button onclick="setTemporalTimeline('2024')" id="btn-timeline-2024" class="px-2 py-0.5 rounded bg-[#0A0F1D] text-gray-400 border border-gray-800 hover:text-white cursor-pointer transition-all">2024 Interim</button>
-                <button onclick="setTemporalTimeline('2025')" id="btn-timeline-2025" class="px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/50 font-bold cursor-pointer transition-all">2025 Active</button>
+              <!-- Horizontally Sliding Navigation Track with Smooth Slider Animation -->
+              <div id="map-controls-slider" class="flex-1 flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth py-0.5">
+                
+                <!-- Group 1: Live Viewport Telemetry -->
+                <div class="shrink-0 flex items-center gap-1.5 bg-[#050811] px-2.5 py-1 rounded-lg border border-white/10 text-[10.5px] font-mono text-gray-300 shadow">
+                  <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                  <span id="sensor-badge" class="text-white font-bold uppercase whitespace-nowrap">ESRI WORLD (0.5m)</span>
+                  <span class="text-gray-600">|</span>
+                  <span id="viewport-dimension-badge" class="text-cyan-300 font-bold whitespace-nowrap">2D NADIR</span>
+                  <span class="text-gray-600">|</span>
+                  <span id="viewport-zoom-label" class="text-emerald-300 font-bold whitespace-nowrap">ZOOM: 14X</span>
+                </div>
+
+                <!-- Group 2: Satellite Sensor Switcher -->
+                <div class="shrink-0 flex items-center gap-1 bg-[#050811] p-1 rounded-lg border border-gray-800">
+                  <span class="text-[9px] text-gray-500 uppercase font-bold px-1 whitespace-nowrap">Sensors:</span>
+                  <button onclick="setSatelliteProvider('esri')" id="btn-prov-esri" class="px-2.5 py-1 rounded text-[11px] font-semibold bg-blue-600 text-white cursor-pointer transition-colors shadow whitespace-nowrap">Optical</button>
+                  <button onclick="setSatelliteProvider('google')" id="btn-prov-google" class="px-2.5 py-1 rounded text-[11px] font-semibold text-gray-400 hover:text-white cursor-pointer transition-colors whitespace-nowrap">Google Hybrid</button>
+                  <button onclick="setSatelliteProvider('maptiler')" id="btn-prov-maptiler" class="px-2.5 py-1 rounded text-[11px] font-semibold text-gray-400 hover:text-white cursor-pointer transition-colors whitespace-nowrap">MapTiler 3D</button>
+                  <button onclick="setSatelliteProvider('nasa_gibs')" id="btn-prov-gibs" class="px-2.5 py-1 rounded text-[11px] font-semibold text-gray-400 hover:text-white cursor-pointer transition-colors whitespace-nowrap">NASA Live</button>
+                  <select id="nasa-layer-select" onchange="switchNasaLayer(this.value)" class="hidden px-2 py-1 rounded text-[10px] font-mono bg-gray-900 text-amber-300 border border-amber-500/40 cursor-pointer">
+                    <option value="MODIS_Terra_CorrectedReflectance_TrueColor">True Color</option>
+                    <option value="MODIS_Terra_CorrectedReflectance_Bands721">False Color (7-2-1)</option>
+                    <option value="VIIRS_SNPP_DayNightBand_ENCC">Night Lights</option>
+                    <option value="MODIS_Terra_NDVI_8Day">NDVI 8-Day</option>
+                    <option value="MODIS_Terra_Aerosol">Aerosol AOD</option>
+                  </select>
+                  <button onclick="setSatelliteProvider('sar')" id="btn-prov-sar" class="px-2.5 py-1 rounded text-[11px] font-semibold text-gray-400 hover:text-white cursor-pointer transition-colors whitespace-nowrap">SAR Radar</button>
+                </div>
+
+                <!-- Group 3: Analysis & Tactical Layers -->
+                <div class="shrink-0 flex items-center gap-1 bg-[#050811] p-1 rounded-lg border border-gray-800">
+                  <span class="text-[9px] text-gray-500 uppercase font-bold px-1 whitespace-nowrap">Overlays:</span>
+                  <button onclick="toggleTopoJSONLayer()" id="btn-topojson" class="px-2.5 py-1 rounded text-[11px] font-semibold text-purple-300 hover:text-white border border-purple-500/30 cursor-pointer transition-colors whitespace-nowrap">Boundaries</button>
+                  <button onclick="toggleSpectralMode('ndvi')" id="btn-prov-ndvi" class="px-2.5 py-1 rounded text-[11px] font-semibold text-emerald-400 hover:text-white border border-emerald-500/30 cursor-pointer transition-colors whitespace-nowrap">NDVI</button>
+                  <button onclick="measureGeodesicArea()" id="btn-measure" class="px-2.5 py-1 rounded text-[11px] font-semibold text-cyan-300 hover:text-white border border-cyan-500/30 cursor-pointer transition-colors flex items-center gap-1 whitespace-nowrap"><span>Measure</span></button>
+                  <button onclick="toggleTrafficLayer()" id="btn-traffic" class="px-2.5 py-1 rounded text-[11px] font-medium bg-gray-900 text-gray-400 hover:text-white border border-white/10 cursor-pointer transition-colors whitespace-nowrap">Traffic: OFF</button>
+                  <button onclick="toggleOverlay()" id="btn-overlay" class="px-2.5 py-1 rounded text-[11px] font-medium bg-emerald-950 text-emerald-300 border border-emerald-500/50 cursor-pointer whitespace-nowrap">Grounding: ON</button>
+                </div>
+
+                <!-- Group 4: Mission Timeline Selectors (12 September 2026 Present Time) -->
+                <div class="shrink-0 flex items-center gap-1 bg-[#050811] p-1 rounded-lg border border-gray-800">
+                  <span class="text-[9px] text-gray-500 uppercase font-bold px-1 whitespace-nowrap">Timeline:</span>
+                  <button onclick="setTemporalTimeline('2023')" id="btn-timeline-2023" class="px-2.5 py-1 rounded bg-[#0A0F1D] text-gray-400 border border-gray-800 hover:text-white text-[11px] font-bold cursor-pointer transition-all whitespace-nowrap">📅 14 OCT 2023 (T0 Baseline)</button>
+                  <button onclick="setTemporalTimeline('2025')" id="btn-timeline-2025" class="px-2.5 py-1 rounded bg-[#0A0F1D] text-gray-400 border border-gray-800 hover:text-white text-[11px] font-bold cursor-pointer transition-all whitespace-nowrap">📅 2025 Interim</button>
+                  <button onclick="setTemporalTimeline('2026')" id="btn-timeline-2026" class="px-2.5 py-1 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/60 text-[11px] font-bold cursor-pointer transition-all shadow-[0_0_10px_rgba(6,182,212,0.4)] whitespace-nowrap">🛰️ 12 SEP 2026 (T1 Current)</button>
+                </div>
+
               </div>
+
+              <!-- Right Slide Animation Arrow -->
+              <button onclick="slideMapControls(220)" id="map-slider-next" class="w-7 h-7 shrink-0 rounded-lg bg-[#070C18] hover:bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 flex items-center justify-center cursor-pointer transition-all hover:scale-105 active:scale-95 shadow font-bold text-sm" title="Slide right to reveal more map functions">
+                &#9654;
+              </button>
             </div>
 
             <!-- Google Earth 3D Compass & Navigation Gimbal -->
-            <div id="google-earth-compass-gizmo" class="absolute right-4 top-16 z-30 flex flex-col items-center gap-1.5 bg-black/90 backdrop-blur-md p-2 rounded-2xl border border-white/15 shadow-2xl select-none">
+            <div id="google-earth-compass-gizmo" class="absolute right-3 top-12 z-30 flex flex-col items-center gap-1.5 bg-black/90 backdrop-blur-md p-2 rounded-2xl border border-white/15 shadow-2xl select-none">
               <!-- Interactive 3D Compass Dial -->
               <div onclick="resetNorthHeading()" class="relative w-11 h-11 rounded-full bg-[#080E1E] border-2 border-cyan-500/40 hover:border-cyan-400 flex items-center justify-center cursor-pointer transition-all hover:scale-105 shadow-[0_0_15px_rgba(6,182,212,0.25)]" title="Click to Reset Camera to True North (0°)">
                 <!-- Compass Rose Inner Ring -->
@@ -748,7 +753,7 @@
               </svg>
 
               <!-- SIDE-BY-SIDE TEMPORAL HEADINGS: Past Satellite Image vs Live Satellite Image -->
-              <div id="heading-badge-past" class="absolute top-12 left-4 z-20 flex items-center gap-2 bg-black/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-amber-500/60 shadow-2xl pointer-events-none select-none">
+              <div id="heading-badge-past" class="absolute top-12 left-3 z-20 flex items-center gap-2 bg-black/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-amber-500/60 shadow-2xl pointer-events-none select-none">
                 <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
                 <div>
                   <div class="text-[11px] font-mono text-amber-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
@@ -756,20 +761,20 @@
                     <span id="badge-past-date" class="text-[9px] px-1.5 py-0.2 rounded bg-amber-950 text-amber-300 border border-amber-500/50 font-bold">14 OCT 2023 (T0)</span>
                   </div>
                   <div id="badge-past-sub" class="text-[9px] font-mono text-amber-200/80">
-                    Sentinel-2A Archival &bull; Cloud-Free Reference (Year 2023)
+                    Sentinel-2A Archival &bull; Cloud-Free Baseline (Year 2023)
                   </div>
                 </div>
               </div>
 
-              <div id="heading-badge-live" class="absolute top-12 right-24 z-20 flex items-center gap-2 bg-black/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-cyan-500/60 shadow-2xl pointer-events-none select-none">
+              <div id="heading-badge-live" class="absolute top-12 right-20 z-20 flex items-center gap-2 bg-black/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-cyan-500/60 shadow-2xl pointer-events-none select-none">
                 <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
                 <div>
                   <div class="text-[11px] font-mono text-cyan-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
                     <span>CURRENT OBSERVATION (AFTER)</span>
-                    <span id="badge-live-date" class="text-[9px] px-1.5 py-0.2 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/50 font-bold">28 JUL 2025 (T1)</span>
+                    <span id="badge-live-date" class="text-[9px] px-1.5 py-0.2 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/50 font-bold">12 SEP 2026 (T1 ACTIVE)</span>
                   </div>
                   <div id="badge-live-sub" class="text-[9px] font-mono text-cyan-200/80">
-                    Sentinel-1 SAR / Sentinel-2B &bull; Tactical Active Pass (Year 2025)
+                    Sentinel-1 SAR / Sentinel-2B &bull; Tactical Active Pass (12 SEP 2026)
                   </div>
                 </div>
               </div>
@@ -786,7 +791,7 @@
                 </div>
                 <div class="absolute top-12 left-3 bg-black/90 backdrop-blur-md px-2.5 py-1 rounded border border-cyan-400 text-[10px] font-mono text-cyan-300 font-bold uppercase tracking-wider shadow-xl flex items-center gap-1.5">
                   <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-                  <span>Live Observation (T2 Split View)</span>
+                  <span id="split-overlay-date">12 SEP 2026 Active Pass (T1 Split View)</span>
                 </div>
               </div>
 
@@ -795,7 +800,7 @@
                 <div class="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap bg-black/90 border border-cyan-400 text-[9px] font-mono font-bold text-cyan-300 px-2.5 py-0.5 rounded-full shadow-2xl flex items-center gap-1.5 pointer-events-none">
                   <span class="text-amber-300">◀ 2023 PAST</span>
                   <span class="text-gray-500">|</span>
-                  <span class="text-cyan-300">2025 ACTIVE ▶</span>
+                  <span class="text-cyan-300">12 SEP 2026 CURRENT ▶</span>
                 </div>
                 <div class="w-7 h-12 bg-cyan-500 hover:bg-cyan-400 border-2 border-white rounded-full shadow-[0_0_15px_rgba(6,182,212,0.9)] flex items-center justify-center transition-transform hover:scale-105 active:scale-95">
                   <svg class="w-3.5 h-3.5 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
@@ -5611,18 +5616,25 @@
       }
     }
 
+    function slideMapControls(delta) {
+      const slider = document.getElementById('map-controls-slider');
+      if (slider) {
+        slider.scrollBy({ left: delta, behavior: 'smooth' });
+      }
+    }
+
     function setTemporalTimeline(year) {
-      ['2023', '2024', '2025'].forEach(y => {
+      ['2023', '2025', '2026'].forEach(y => {
         const b = document.getElementById(`btn-timeline-${y}`);
         if (b) {
           if (y === year) {
             b.className = y === '2023'
-              ? "px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/50 font-bold cursor-pointer transition-all"
-              : (y === '2024'
-                ? "px-2 py-0.5 rounded bg-blue-950 text-blue-300 border border-blue-500/50 font-bold cursor-pointer transition-all"
-                : "px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/50 font-bold cursor-pointer transition-all");
+              ? "px-2.5 py-1 rounded bg-amber-950 text-amber-300 border border-amber-500/60 text-[11px] font-bold cursor-pointer transition-all shadow whitespace-nowrap"
+              : (y === '2025'
+                ? "px-2.5 py-1 rounded bg-blue-950 text-blue-300 border border-blue-500/60 text-[11px] font-bold cursor-pointer transition-all shadow whitespace-nowrap"
+                : "px-2.5 py-1 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/60 text-[11px] font-bold cursor-pointer transition-all shadow-[0_0_10px_rgba(6,182,212,0.4)] whitespace-nowrap");
           } else {
-            b.className = "px-2 py-0.5 rounded bg-[#0A0F1D] text-gray-400 border border-gray-800 hover:text-white cursor-pointer transition-all";
+            b.className = "px-2.5 py-1 rounded bg-[#0A0F1D] text-gray-400 border border-gray-800 hover:text-white text-[11px] font-bold cursor-pointer transition-all whitespace-nowrap";
           }
         }
       });
@@ -5633,18 +5645,18 @@
 
       if (year === '2023') {
         if (pastBadge) pastBadge.innerText = "14 OCT 2023 (T0)";
-        if (liveBadge) liveBadge.innerText = "28 JUL 2025 (T1)";
-        if (splitDate) splitDate.innerText = "2023 Baseline View";
+        if (liveBadge) liveBadge.innerText = "12 SEP 2026 (T1)";
+        if (splitDate) splitDate.innerText = "14 OCT 2023 Baseline View";
         setSliderSplitPosition(15);
-      } else if (year === '2024') {
-        if (pastBadge) pastBadge.innerText = "12 MAY 2024 (INTERIM)";
-        if (liveBadge) liveBadge.innerText = "28 JUL 2025 (T1)";
-        if (splitDate) splitDate.innerText = "2024 Interim View";
-        setSliderSplitPosition(50);
       } else if (year === '2025') {
+        if (pastBadge) pastBadge.innerText = "28 JUL 2025 (INTERIM)";
+        if (liveBadge) liveBadge.innerText = "12 SEP 2026 (T1)";
+        if (splitDate) splitDate.innerText = "2025 Interim Observation";
+        setSliderSplitPosition(50);
+      } else if (year === '2026') {
         if (pastBadge) pastBadge.innerText = "14 OCT 2023 (T0)";
-        if (liveBadge) liveBadge.innerText = "28 JUL 2025 (T1 ACTIVE)";
-        if (splitDate) splitDate.innerText = "28 JUL 2025 Active Pass";
+        if (liveBadge) liveBadge.innerText = "12 SEP 2026 (T1 ACTIVE)";
+        if (splitDate) splitDate.innerText = "12 SEP 2026 Active Pass";
         setSliderSplitPosition(85);
       }
       renderSatelliteTiles();
@@ -5656,6 +5668,22 @@
       if (split) split.style.left = `${percent}%`;
       if (handle) handle.style.left = `${percent}%`;
     }
+
+    // Initialize 12 September 2026 Mission Timeline & Horizontal Slider Mousewheel
+    window.addEventListener('DOMContentLoaded', () => {
+      try {
+        setTemporalTimeline('2026');
+        const sliderEl = document.getElementById('map-controls-slider');
+        if (sliderEl) {
+          sliderEl.addEventListener('wheel', (e) => {
+            if (e.deltaY !== 0) {
+              e.preventDefault();
+              sliderEl.scrollBy({ left: e.deltaY * 1.5, behavior: 'smooth' });
+            }
+          }, { passive: false });
+        }
+      } catch(e) { console.warn('Timeline init:', e); }
+    });
 </script>
 </body>
 </html>
