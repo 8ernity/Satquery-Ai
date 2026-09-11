@@ -2,9 +2,11 @@
 
 import React from "react";
 
+export type AppTab = "home" | "mission_view" | "workspace" | "debate" | "evaluation" | "analysis_results" | "new_analysis" | "history";
+
 interface HeaderProps {
-  activeTab: "home" | "mission_view" | "workspace" | "debate" | "evaluation";
-  setActiveTab: (tab: "home" | "mission_view" | "workspace" | "debate" | "evaluation") => void;
+  activeTab: AppTab;
+  setActiveTab: (tab: AppTab) => void;
   systemHealth?: string;
   gateway?: string;
 }
@@ -62,6 +64,27 @@ export function Header({
             Mission Home
           </button>
           <button
+            onClick={() => setActiveTab("new_analysis")}
+            className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
+              activeTab === "new_analysis"
+                ? "bg-cyan-600 text-white shadow-sm shadow-cyan-500/20"
+                : "text-cyan-300 hover:text-white hover:bg-cyan-950/40"
+            }`}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+            New Analysis
+          </button>
+          <button
+            onClick={() => setActiveTab("history")}
+            className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+              activeTab === "history"
+                ? "bg-[#3B82F6] text-white shadow-sm"
+                : "text-gray-300 hover:text-white hover:bg-gray-800/60"
+            }`}
+          >
+            Analysis History
+          </button>
+          <button
             onClick={() => setActiveTab("mission_view")}
             className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
               activeTab === "mission_view"
@@ -99,8 +122,13 @@ export function Header({
                 : "text-gray-300 hover:text-white hover:bg-gray-800/60"
             }`}
           >
-            Scientific Evaluation
+            Benchmark & Eval
           </button>
+          {activeTab === "analysis_results" && (
+            <span className="px-3 py-1.5 rounded-md bg-indigo-900/70 text-indigo-300 border border-indigo-500/40 text-xs font-mono uppercase tracking-wider">
+              ● Results Report
+            </span>
+          )}
         </nav>
 
         {/* Right: Operational Status Indicator */}
