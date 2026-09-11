@@ -168,16 +168,28 @@ _MIME_TYPES = {
 }
 
 
+import socket
+
+def _is_nextjs_live(port: int = 3000, timeout: float = 0.05) -> bool:
+    """Instantaneous TCP socket probe to verify if Next.js dev server is running on port 3000."""
+    try:
+        with socket.create_connection(("127.0.0.1", port), timeout=timeout):
+            return True
+    except OSError:
+        return False
+
+
 async def _proxy_to_nextjs(request: Request, target_path: str) -> Response:
     """Proxy request to Next.js server with fallback to pre-built Next.js assets or preview HTML."""
     query_string = f"?{request.url.query}" if request.url.query else ""
 
-    # 1. Try forwarding to active Next.js server (e.g. running on localhost:3000 or 127.0.0.1:3000)
-    for base_url in NEXTJS_CANDIDATE_URLS:
-        target_url = f"{base_url}{target_path}{query_string}"
-        try:
-            async with httpx.AsyncClient(timeout=httpx.Timeout(10.0, connect=1.5)) as client:
-                req_headers = {
+    # 1. Try forwarding to active Next.js server if port 3000 is listening
+    if _is_nextjs_live(3000):
+        for base_url in NEXTJS_CANDIDATE_URLS:
+            target_url = f"{base_url}{target_path}{query_string}"
+            try:
+                async with httpx.AsyncClient(timeout=httpx.Timeout(10.0, connect=0.5)) as client:
+                    req_headers = {
                     k: v for k, v in request.headers.items()
                     if k.lower() not in ("host", "content-length", "content-encoding")
                 }
@@ -196,8 +208,8 @@ async def _proxy_to_nextjs(request: Request, target_path: str) -> Response:
                     headers["Pragma"] = "no-cache"
                     headers["Expires"] = "0"
                 return Response(content=resp.content, status_code=resp.status_code, headers=headers)
-        except Exception:
-            continue
+            except Exception:
+                continue
 
     # 2. Fallback to locally built Next.js production output if Next.js dev server is not reachable
     frontend_dir = Path(__file__).resolve().parents[2] / "frontend"

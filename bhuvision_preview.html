@@ -170,6 +170,11 @@
         <button onclick="switchTab('sar')" id="tab-sar" class="px-2.5 py-1.5 rounded-lg text-gray-300 hover:text-white transition-colors cursor-pointer">
           SAR Radar
         </button>
+                <button onclick="switchTab('disaster')" id="tab-disaster" class="px-2.5 py-1.5 rounded-lg text-emerald-300 hover:text-white hover:bg-emerald-950/40 transition-colors cursor-pointer flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          Disaster & Routing
+        </button>
+
         <button onclick="switchTab('debate')" id="tab-debate" class="px-2.5 py-1.5 rounded-lg text-purple-300 hover:text-white hover:bg-purple-950/40 transition-colors cursor-pointer">
           Agent Debate
         </button>
@@ -1393,6 +1398,317 @@
       </div>
     </section>
 
+  
+    <!-- ================= TACTICAL DISASTER, WEATHER & EVACUATION SCREEN ================= -->
+    <section id="screen-disaster" class="hidden space-y-6 font-mono">
+      <!-- Screen Header -->
+      <div class="bg-[#090E1A] border border-[#1F2937] p-6 rounded-2xl shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+            <span class="text-xs font-bold font-mono tracking-wider text-emerald-400 uppercase">Defense & NDRF Tactical Grid Active</span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-bold font-space text-white tracking-tight">
+            Disaster Management, Weather & Evacuation Routing
+          </h1>
+          <p class="text-xs sm:text-sm text-gray-400 mt-1 font-mono">
+            Autonomous SAR Cloud-Piercing Inundation Mapping &bull; Real-Time Flood-Safe Logistics Corridors &bull; Geological Subsidence
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="bg-[#050811] px-4 py-2.5 rounded-xl border border-emerald-500/30 text-xs text-gray-300">
+            <span class="text-gray-500">Protocol:</span> <span class="text-emerald-400 font-bold">ISRO Bhuvan / NDRF Mode</span>
+          </div>
+          <button onclick="switchTab('workspace')" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-lg shadow-blue-900/40 transition-all cursor-pointer flex items-center gap-1.5">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="12 8 8 12 12 16 12 8"></polygon></svg>
+            Open Satellite Cockpit
+          </button>
+        </div>
+      </div>
+
+      <!-- Incident Selector -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div onclick="selectDisasterIncident('assam')" id="incident-card-assam" class="p-4 rounded-xl border transition-all cursor-pointer bg-emerald-950/40 border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+          <div class="flex items-center justify-between text-xs mb-1">
+            <span class="text-emerald-300 font-bold uppercase">Flood Inundation</span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] bg-red-950 text-red-300 border border-red-500/30">Level 4 Red</span>
+          </div>
+          <div class="text-sm font-bold text-white font-space">Assam Brahmaputra Basin</div>
+          <div class="text-[11px] text-gray-400 mt-1">420.5 Hectares Submerged &bull; -11.2 dB SAR Delta</div>
+        </div>
+
+        <div onclick="selectDisasterIncident('joshimath')" id="incident-card-joshimath" class="p-4 rounded-xl border transition-all cursor-pointer bg-[#0B1120] border-[#1F2937] hover:border-gray-600 text-gray-400 hover:text-white">
+          <div class="flex items-center justify-between text-xs mb-1">
+            <span class="text-amber-400 font-bold uppercase">Slope Subsidence</span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-950 text-amber-300 border border-amber-500/30">High Risk</span>
+          </div>
+          <div class="text-sm font-bold text-white font-space">Joshimath Himalayan Sector</div>
+          <div class="text-[11px] text-gray-400 mt-1">-14.2 mm/yr Displacement &bull; InSAR Interferometry</div>
+        </div>
+
+        <div onclick="selectDisasterIncident('wayanad')" id="incident-card-wayanad" class="p-4 rounded-xl border transition-all cursor-pointer bg-[#0B1120] border-[#1F2937] hover:border-gray-600 text-gray-400 hover:text-white">
+          <div class="flex items-center justify-between text-xs mb-1">
+            <span class="text-purple-400 font-bold uppercase">Landslide Debris</span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] bg-red-950 text-red-300 border border-red-500/30">Shear Plane</span>
+          </div>
+          <div class="text-sm font-bold text-white font-space">Wayanad Western Ghats</div>
+          <div class="text-[11px] text-gray-400 mt-1">Saturated Soil Failure &bull; 82% Moisture Threshold</div>
+        </div>
+
+        <div onclick="selectDisasterIncident('simlipal')" id="incident-card-simlipal" class="p-4 rounded-xl border transition-all cursor-pointer bg-[#0B1120] border-[#1F2937] hover:border-gray-600 text-gray-400 hover:text-white">
+          <div class="flex items-center justify-between text-xs mb-1">
+            <span class="text-orange-400 font-bold uppercase">Wildfire Burn</span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] bg-orange-950 text-orange-300 border border-orange-500/30">Active Thermal</span>
+          </div>
+          <div class="text-sm font-bold text-white font-space">Simlipal Biosphere Reserve</div>
+          <div class="text-[11px] text-gray-400 mt-1">dNBR Burn Severity 0.68 &bull; SWIR Thermal Radiance</div>
+        </div>
+      </div>
+
+      <!-- Main Operational 2-Column Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left 7 Cols: Disaster Extent & Weather Intelligence -->
+        <div class="lg:col-span-7 space-y-6">
+          
+          <!-- Live Telemetry Card -->
+          <div class="bg-[#0B1120] border border-[#1F2937] rounded-2xl p-5 shadow-xl">
+            <div class="flex items-center justify-between pb-3 border-b border-[#1F2937] mb-4">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                <span class="text-xs font-bold uppercase tracking-wider text-cyan-400">Incident Telemetry & Delineation</span>
+              </div>
+              <span id="disaster-incident-target" class="text-xs text-gray-300 font-bold">Target: Guwahati Riverfront [26.1445, 91.7362]</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4 text-center">
+              <div class="p-3 bg-[#050811] rounded-xl border border-gray-800">
+                <div class="text-[10px] text-gray-400 uppercase">Flood Extent</div>
+                <div id="disaster-metric-extent" class="text-base font-bold text-cyan-400 mt-0.5">420.5 Ha</div>
+                <div class="text-[9px] text-gray-500">1.04 sq km</div>
+              </div>
+              <div class="p-3 bg-[#050811] rounded-xl border border-gray-800">
+                <div class="text-[10px] text-gray-400 uppercase">SAR Backscatter</div>
+                <div id="disaster-metric-sar" class="text-base font-bold text-purple-400 mt-0.5">-19.4 dB</div>
+                <div class="text-[9px] text-gray-500">Delta -11.2 dB</div>
+              </div>
+              <div class="p-3 bg-[#050811] rounded-xl border border-gray-800">
+                <div class="text-[10px] text-gray-400 uppercase">Submerged Assets</div>
+                <div id="disaster-metric-assets" class="text-base font-bold text-amber-400 mt-0.5">18 Bldgs</div>
+                <div class="text-[9px] text-gray-500">3 Bridges Blocked</div>
+              </div>
+              <div class="p-3 bg-[#050811] rounded-xl border border-gray-800">
+                <div class="text-[10px] text-gray-400 uppercase">Clearance Safety</div>
+                <div id="disaster-metric-safety" class="text-base font-bold text-red-400 mt-0.5">18.4%</div>
+                <div class="text-[9px] text-gray-500">Critical Red Alert</div>
+              </div>
+            </div>
+
+            <!-- Automated SAM-Geo Delineation Trigger -->
+            <div class="bg-[#070B14] p-4 rounded-xl border border-cyan-500/20 mb-4">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-white font-bold">SAM-Geo Zero-Shot Foundation Segmentation</span>
+                <span class="text-[10px] text-cyan-400">ViT-H Image Encoder</span>
+              </div>
+              <p class="text-xs text-gray-400 leading-relaxed mb-3">
+                Promptable foundation model delineates exact hydrological retention boundaries, bridge cutoffs, and flooded building footprints without manual training labels.
+              </p>
+              <div class="flex items-center gap-2">
+                <input id="samgeo-prompt-input" type="text" value="water and flood retention basin" class="flex-1 bg-[#050811] border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-white focus:border-cyan-400 focus:outline-none" />
+                <button onclick="runDisasterSAMGeo()" id="btn-run-samgeo" class="px-4 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-xs font-semibold transition-all cursor-pointer whitespace-nowrap">
+                  Delineate Perimeter
+                </button>
+              </div>
+              <div id="samgeo-results-box" class="hidden mt-3 pt-3 border-t border-gray-800 text-xs space-y-1.5 text-gray-300">
+                <!-- Populated via JS -->
+              </div>
+            </div>
+
+            <!-- Weather & Atmospheric Suite -->
+            <div class="bg-[#050811] p-4 rounded-xl border border-[#1F2937]">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-bold text-white uppercase flex items-center gap-1.5">
+                  <svg class="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg>
+                  Atmospheric Obscuration & Radar Piercing Suite
+                </span>
+                <span class="text-[10px] text-emerald-400 font-bold">&bull; Cross-Modal Failover Active</span>
+              </div>
+              
+              <div class="space-y-2 text-xs">
+                <div>
+                  <div class="flex justify-between text-gray-400 mb-1">
+                    <span>Optical Cloud Obscuration Deck (1,200m Ceiling)</span>
+                    <span id="weather-cloud-pct" class="text-white font-bold">84.6% Obscured</span>
+                  </div>
+                  <div class="w-full h-2 rounded-full bg-gray-800 overflow-hidden">
+                    <div id="weather-cloud-bar" class="h-full bg-red-500 rounded-full" style="width: 84.6%;"></div>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 pt-2">
+                  <div class="p-2.5 rounded-lg bg-[#0A0F1D] border border-gray-800">
+                    <div class="text-[10px] text-gray-400">Optical Attenuation</div>
+                    <div class="text-xs font-bold text-red-400 mt-0.5">-18.4 dB (Blinded)</div>
+                  </div>
+                  <div class="p-2.5 rounded-lg bg-[#0A0F1D] border border-emerald-500/30">
+                    <div class="text-[10px] text-gray-400">SAR Microwave Penetration</div>
+                    <div class="text-xs font-bold text-emerald-400 mt-0.5">100.0% (Zero Loss)</div>
+                  </div>
+                </div>
+
+                <div class="p-2.5 rounded-lg bg-blue-950/30 border border-blue-500/30 text-[11px] text-blue-200 mt-2">
+                  <span class="font-bold">Autonomous Sensor Verdict:</span> Optical camera obstructed by monsoon stratus clouds. Controller automatically shifted primary investigation to Sentinel-1 C-Band (5.405 GHz) microwave backscatter.
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Agriculture & Geological Subsidence Card -->
+          <div class="bg-[#0B1120] border border-[#1F2937] rounded-2xl p-5 shadow-xl">
+            <div class="flex items-center justify-between pb-3 border-b border-[#1F2937] mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Agriculture & Geological Management</span>
+              <span class="text-[10px] text-gray-400">Sentinel-2 Multispectral & InSAR</span>
+            </div>
+
+            <div class="flex items-center gap-2 mb-3">
+              <button onclick="fetchSpectralIndex('ndvi')" id="btn-idx-ndvi" class="px-3 py-1 rounded-lg text-xs font-bold bg-emerald-600 text-white transition-all cursor-pointer">NDVI (Canopy Health)</button>
+              <button onclick="fetchSpectralIndex('ndwi')" id="btn-idx-ndwi" class="px-3 py-1 rounded-lg text-xs font-bold bg-[#050811] text-gray-400 border border-gray-800 hover:text-white transition-all cursor-pointer">NDWI (Water/Moisture)</button>
+              <button onclick="fetchSpectralIndex('ndbi')" id="btn-idx-ndbi" class="px-3 py-1 rounded-lg text-xs font-bold bg-[#050811] text-gray-400 border border-gray-800 hover:text-white transition-all cursor-pointer">NDBI (Built-up)</button>
+            </div>
+
+            <div id="spectral-output-card" class="p-3 bg-[#050811] rounded-xl border border-gray-800 text-xs space-y-1">
+              <div class="flex justify-between">
+                <span class="text-gray-400">Spectral Index Value:</span>
+                <span id="spectral-val-text" class="text-emerald-400 font-bold">+0.742 (Dense Healthy Canopy)</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Spectral Bands:</span>
+                <span id="spectral-bands-text" class="text-gray-300">B08 (NIR) vs B04 (Red)</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Geological Ground Subsidence:</span>
+                <span id="spectral-subsidence-text" class="text-amber-400 font-bold">-14.2 mm/year (Active Shear Plane)</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right 5 Cols: Safe Evacuation & Direction Routing -->
+        <div class="lg:col-span-5 space-y-6">
+          
+          <div class="bg-[#0B1120] border border-[#1F2937] rounded-2xl p-5 shadow-xl">
+            <div class="flex items-center justify-between pb-3 border-b border-[#1F2937] mb-4">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <span class="text-xs font-bold uppercase tracking-wider text-white">Safe Evacuation & Emergency Directions</span>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950 text-emerald-300 border border-emerald-500/30">Topological Engine</span>
+            </div>
+
+            <!-- Coordinate Inputs -->
+            <div class="space-y-3 mb-4 text-xs">
+              <div>
+                <label class="text-gray-400 block mb-1">Evacuation Origin (Staging Area):</label>
+                <div class="grid grid-cols-2 gap-2">
+                  <input id="evac-orig-lat" type="number" step="0.0001" value="26.1445" class="bg-[#050811] border border-gray-800 rounded-lg px-2.5 py-1.5 text-white" placeholder="Lat" />
+                  <input id="evac-orig-lon" type="number" step="0.0001" value="91.7362" class="bg-[#050811] border border-gray-800 rounded-lg px-2.5 py-1.5 text-white" placeholder="Lon" />
+                </div>
+              </div>
+
+              <div>
+                <label class="text-gray-400 block mb-1">Destination (Relief Base Camp):</label>
+                <div class="grid grid-cols-2 gap-2">
+                  <input id="evac-dest-lat" type="number" step="0.0001" value="26.2100" class="bg-[#050811] border border-gray-800 rounded-lg px-2.5 py-1.5 text-white" placeholder="Lat" />
+                  <input id="evac-dest-lon" type="number" step="0.0001" value="91.8200" class="bg-[#050811] border border-gray-800 rounded-lg px-2.5 py-1.5 text-white" placeholder="Lon" />
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2 pt-1">
+                <input id="evac-avoid-flood" type="checkbox" checked class="rounded bg-[#050811] border-gray-700 text-emerald-500 focus:ring-0" />
+                <label for="evac-avoid-flood" class="text-[11px] text-gray-300">Divert around SAR-detected flood inundation polygons</label>
+              </div>
+
+              <button onclick="calculateEvacuationRoute()" id="btn-calc-evac" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs shadow-lg shadow-emerald-900/40 transition-all cursor-pointer flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+                Calculate Flood-Safe Evacuation Corridor
+              </button>
+            </div>
+
+            <!-- Comparative Route Cards -->
+            <div class="space-y-2.5 mb-4">
+              <div class="p-3 rounded-xl border bg-red-950/20 border-red-500/40">
+                <div class="flex items-center justify-between text-xs mb-1">
+                  <span class="text-red-400 font-bold">Primary Highway (NH-44 Bypass)</span>
+                  <span class="px-1.5 py-0.5 rounded text-[10px] bg-red-900/50 text-red-200 uppercase font-bold">Closed / Blocked</span>
+                </div>
+                <p class="text-[11px] text-gray-400 leading-tight">
+                  River Bridge Sector 4 inundated by 1.4m standing water (< -16.5 dB backscatter). 45 min delay with high vehicle stranding hazard.
+                </p>
+              </div>
+
+              <div class="p-3 rounded-xl border bg-emerald-950/30 border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.15)]">
+                <div class="flex items-center justify-between text-xs mb-1">
+                  <span class="text-emerald-300 font-bold">Elevated Western Ridge Bypass 12</span>
+                  <span class="px-1.5 py-0.5 rounded text-[10px] bg-emerald-900/50 text-emerald-200 uppercase font-bold">100% Flood-Safe</span>
+                </div>
+                <div class="flex items-center justify-between text-[11px] text-gray-300 mt-1">
+                  <span id="evac-route-dist">Distance: 14.8 km</span>
+                  <span id="evac-route-time" class="text-emerald-400 font-bold">Transit: 28.5 mins</span>
+                  <span id="evac-route-score" class="text-cyan-400 font-bold">Safety: 98.2%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Turn-by-Turn Navigation Steps -->
+            <div class="border-t border-[#1F2937] pt-3">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-white uppercase">Turn-by-Turn Safe Navigation Steps</span>
+                <button onclick="plotEvacuationOnCockpit()" class="text-[11px] text-blue-400 hover:text-blue-300 font-bold cursor-pointer">
+                  Plot on Cockpit Map &rarr;
+                </button>
+              </div>
+              <div id="evac-steps-container" class="space-y-2 max-h-56 overflow-y-auto pr-1 text-xs">
+                <div class="p-2.5 rounded-lg bg-[#050811] border border-gray-800 flex items-start gap-2">
+                  <span class="w-5 h-5 rounded-full bg-emerald-900 text-emerald-300 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">1</span>
+                  <div>
+                    <div class="text-gray-200 font-semibold">Depart evacuation staging area at [26.1445, 91.7362].</div>
+                    <div class="text-[10px] text-gray-500">3.7 km &bull; 7.4 mins &bull; Head northwest on relief corridor</div>
+                  </div>
+                </div>
+                <div class="p-2.5 rounded-lg bg-[#050811] border border-gray-800 flex items-start gap-2">
+                  <span class="w-5 h-5 rounded-full bg-emerald-900 text-emerald-300 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">2</span>
+                  <div>
+                    <div class="text-gray-200 font-semibold">Turn right onto Elevated State Highway Bypass 12.</div>
+                    <div class="text-[10px] text-gray-500">3.7 km &bull; 6.8 mins &bull; Diverts from low-elevation riverbank</div>
+                    <div class="text-[9px] text-amber-400 font-bold mt-0.5">SAR flood perimeter within 400m south; maintain ridge elevation.</div>
+                  </div>
+                </div>
+                <div class="p-2.5 rounded-lg bg-[#050811] border border-gray-800 flex items-start gap-2">
+                  <span class="w-5 h-5 rounded-full bg-emerald-900 text-emerald-300 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">3</span>
+                  <div>
+                    <div class="text-gray-200 font-semibold">Continue past Logistics Checkpoint Delta through cleared sector.</div>
+                    <div class="text-[10px] text-gray-500">3.7 km &bull; 6.2 mins &bull; All arterial lanes open</div>
+                  </div>
+                </div>
+                <div class="p-2.5 rounded-lg bg-[#050811] border border-gray-800 flex items-start gap-2">
+                  <span class="w-5 h-5 rounded-full bg-emerald-900 text-emerald-300 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">4</span>
+                  <div>
+                    <div class="text-gray-200 font-semibold">Arrive safely at Emergency Relief Base Camp [26.2100, 91.8200].</div>
+                    <div class="text-[10px] text-gray-500">3.7 km &bull; 8.1 mins &bull; High ground medical triage area</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
   </main>
 
   <!-- ================= API KEY & MAP CONFIG MODAL ================= -->
@@ -2004,7 +2320,7 @@
     // Navigation Switcher
     function switchTab(tab) {
       currentTab = tab;
-      ['home', 'mission', 'workspace', 'sar', 'debate', 'evaluation', 'futuristic'].forEach(t => {
+      ['home', 'mission', 'workspace', 'sar', 'disaster', 'debate', 'evaluation', 'futuristic'].forEach(t => {
         const sec = document.getElementById(`screen-${t}`);
         const btn = document.getElementById(`tab-${t}`);
         if (sec) sec.classList.add('hidden');
