@@ -69,3 +69,4 @@ backend/data/
 scratch/
 backend/checkpoints/
 *.pt
+*.tsbuildinfo
