@@ -45,6 +45,55 @@ export function Sidebar({
       action: () => setActiveTab("new_analysis"),
     },
     {
+      id: "image_compare" as AppTab,
+      label: "Image Compare",
+      icon: (
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="2" y="3" width="9" height="18" rx="1" />
+          <rect x="13" y="3" width="9" height="18" rx="1" />
+          <path d="M8 8l3 4-3 4" />
+          <path d="M16 16l-3-4 3-4" />
+        </svg>
+      ),
+      action: () => setActiveTab("image_compare"),
+    },
+    {
+      id: "defense_ops" as AppTab,
+      label: "Defense Intel Ops",
+      icon: (
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+      ),
+      action: () => setActiveTab("defense_ops"),
+    },
+    {
+      id: "sar_reader" as AppTab,
+      label: "SAR Radar Console",
+      icon: (
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 2a10 10 0 0 1 10 10" />
+          <path d="m12 12 7-7" />
+          <circle cx="12" cy="12" r="4" />
+        </svg>
+      ),
+      action: () => setActiveTab("sar_reader"),
+    },
+    {
+      id: "disaster_routing" as AppTab,
+      label: "Disaster & Corridors",
+      icon: (
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+          <line x1="12" y1="9" x2="12" y2="13" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+      ),
+      action: () => setActiveTab("disaster_routing"),
+    },
+    {
       id: "history" as AppTab,
       label: "Analysis History",
       icon: (
@@ -54,19 +103,6 @@ export function Sidebar({
         </svg>
       ),
       action: () => setActiveTab("history"),
-    },
-    {
-      id: "profile",
-      label: "Operator Profile",
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-          <circle cx="12" cy="7" r="4" />
-        </svg>
-      ),
-      action: () => {
-        if (onOpenProfile) onOpenProfile();
-      },
     },
     {
       id: "evaluation" as AppTab,
@@ -81,7 +117,7 @@ export function Sidebar({
     },
     {
       id: "specialists",
-      label: "Specialist Registry",
+      label: "Agent Specialists",
       icon: (
         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <rect x="2" y="2" width="20" height="8" rx="2" />
