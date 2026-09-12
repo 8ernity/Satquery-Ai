@@ -677,7 +677,6 @@ export function StaticImageComparisonView({ onViewDetailedResult }: StaticImageC
           </div>
         )}
       </div>
-    </div>
     </>
   );
 }
