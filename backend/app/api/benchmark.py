@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import asyncio
 import random
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
@@ -205,7 +205,7 @@ async def run_benchmark_suite() -> dict[str, Any]:
     await asyncio.sleep(0.6)
 
     BENCHMARK_STATE["is_evaluated"] = True
-    BENCHMARK_STATE["last_run_at"] = datetime.utcnow().isoformat() + "Z"
+    BENCHMARK_STATE["last_run_at"] = datetime.now(timezone.utc).isoformat()
 
     for cat in BENCHMARK_STATE["categories"]:
         for m in cat["metrics"]:

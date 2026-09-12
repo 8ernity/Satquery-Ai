@@ -97,8 +97,23 @@ demo_path.mkdir(parents=True, exist_ok=True)
 app.mount("/static/uploads", StaticFiles(directory=str(upload_path)), name="uploads")
 app.mount("/static/demo", StaticFiles(directory=str(demo_path)), name="demo")
 
+def _get_project_root() -> Path:
+    """Resolve project root directory reliably across local dev, monorepo, and containerized Docker environments."""
+    current = Path(__file__).resolve().parent
+    for p in [current, current.parent, current.parent.parent]:
+        if (p / "bhuvision_preview.html").exists() or (p / "assets").exists() or (p / "index.html").exists():
+            return p
+    cwd = Path.cwd()
+    if (cwd / "bhuvision_preview.html").exists() or (cwd / "assets").exists() or (cwd / "index.html").exists():
+        return cwd
+    parents = Path(__file__).resolve().parents
+    return parents[2] if len(parents) > 2 else parents[-1]
+
+
+PROJECT_ROOT = _get_project_root()
+
 # Mount assets directory for 3D SVGs and PWA icons
-assets_dir = Path(__file__).resolve().parents[2] / "assets"
+assets_dir = PROJECT_ROOT / "assets"
 if assets_dir.exists():
     app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
 
@@ -143,7 +158,7 @@ async def get_root(request: Request):
 @app.get("/manifest.json", tags=["PWA"])
 async def get_manifest():
     """Serves the Progressive Web App (PWA) manifest."""
-    manifest_file = Path(__file__).resolve().parents[2] / "manifest.json"
+    manifest_file = PROJECT_ROOT / "manifest.json"
     if manifest_file.exists():
         return FileResponse(manifest_file, media_type="application/manifest+json")
     return {"name": "BHUVISION", "short_name": "BHUVISION"}
@@ -216,7 +231,7 @@ async def _proxy_to_nextjs(request: Request, target_path: str) -> Response:
                 continue
 
     # 2. Fallback to locally built Next.js production output if Next.js dev server is not reachable
-    frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+    frontend_dir = PROJECT_ROOT / "frontend"
     next_dir = frontend_dir / ".next"
 
     if target_path.startswith("/_next/"):
@@ -245,8 +260,8 @@ async def _proxy_to_nextjs(request: Request, target_path: str) -> Response:
             headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
         )
 
-    # 3. Fallback to standalone preview HTML
-    preview_file = Path(__file__).resolve().parents[2] / "bhuvision_preview.html"
+    # 3. Fallback to standalone cockpit HTML
+    preview_file = (PROJECT_ROOT / "index.html") if (PROJECT_ROOT / "index.html").exists() else (PROJECT_ROOT / "bhuvision_preview.html")
     if preview_file.exists():
         return FileResponse(
             preview_file,
@@ -282,7 +297,7 @@ async def proxy_analysis_pages(request: Request, path: str):
 @app.api_route("/preview-hud", methods=["GET", "HEAD"], tags=["Frontend Application"])
 async def get_standalone_3d_preview():
     """Serves the standalone Three.js God's Eye WebGL preview."""
-    preview_file = Path(__file__).resolve().parents[2] / "bhuvision_preview.html"
+    preview_file = (PROJECT_ROOT / "bhuvision_preview.html") if (PROJECT_ROOT / "bhuvision_preview.html").exists() else (PROJECT_ROOT / "index.html")
     if preview_file.exists():
         return FileResponse(preview_file, media_type="text/html")
     return {"error": "Application file not found", "path": str(preview_file)}
@@ -292,7 +307,7 @@ async def get_standalone_3d_preview():
 @app.api_route("/docs/deployment-manual.pdf", methods=["GET", "HEAD"], tags=["Documentation"])
 async def download_deployment_manual_pdf():
     """Serves the complete Enterprise Production Deployment Manual PDF for direct download."""
-    pdf_file = Path(__file__).resolve().parents[2] / "docs" / "BHUVISION_PRODUCTION_DEPLOYMENT_MANUAL.pdf"
+    pdf_file = PROJECT_ROOT / "docs" / "BHUVISION_PRODUCTION_DEPLOYMENT_MANUAL.pdf"
     if pdf_file.exists():
         return FileResponse(
             pdf_file,
