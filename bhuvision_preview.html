@@ -8,6 +8,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="/manifest.json">
   <title>BHUVISION — Production-Level Spatial Earth Intelligence (SIH26167)</title>
+  <!-- jsPDF & html2canvas for Vector PDF Reporting -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <!-- Tailwind CSS via allowlisted CDN -->
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <!-- Three.js & OrbitControls for Photorealistic 3D Earth (God's Eye View) -->
@@ -184,6 +187,15 @@
         <button onclick="switchTab('futuristic')" id="tab-futuristic" class="px-2.5 py-1.5 rounded-lg text-gray-300 hover:text-white transition-colors cursor-pointer">
           InSAR & Tech
         </button>
+        <button onclick="switchTab('defense')" id="tab-defense" class="px-2.5 py-1.5 rounded-lg text-amber-300 hover:text-white hover:bg-amber-950/40 transition-colors cursor-pointer flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+          Defense Intel
+        </button>
+        <button onclick="switchTab('comparison')" id="tab-comparison" class="px-2.5 py-1.5 rounded-lg text-cyan-300 hover:text-white hover:bg-cyan-950/40 transition-colors cursor-pointer flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+          Image Comparison
+        </button>
+
       </nav>
 
       <!-- Operational Readiness & API Key Action Buttons -->
@@ -558,6 +570,11 @@
                    class="w-full bg-[#030611] border border-[#1F2937] focus:border-cyan-400 rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 font-mono outline-none shadow-inner" />
           </div>
           
+                    <button onclick="exportCockpitPdf()" id="btn-cockpit-pdf" class="px-4 py-2.5 bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-600 hover:to-indigo-600 text-white font-bold text-xs rounded-xl shadow-lg transition-all flex items-center gap-2 font-mono uppercase tracking-wider cursor-pointer border border-purple-400/40 shrink-0" title="Export Surveillance Cockpit Intelligence to PDF">
+            <svg class="w-4 h-4 text-purple-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <span>Export PDF Report</span>
+          </button>
+
           <button onclick="runInvestigationPipeline()" id="btn-investigate" class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold text-xs rounded-xl shadow-lg transition-all flex items-center gap-2 font-mono uppercase tracking-wider cursor-pointer border border-cyan-400/30 shrink-0">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             <span>Investigate Target</span>
@@ -1515,6 +1532,11 @@
             </div>
           </div>
         </div>
+                <button onclick="exportDisasterPdf()" class="px-3 py-1.5 bg-emerald-900/60 hover:bg-emerald-800 border border-emerald-500/50 text-emerald-200 text-xs font-mono font-bold rounded-lg shadow cursor-pointer transition-all flex items-center gap-1.5 shrink-0">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span>Export Disaster PDF</span>
+        </button>
+
         <button onclick="plotEvacuationOnCockpit()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-mono font-bold rounded-lg shadow cursor-pointer transition-all shrink-0">
           Plot on Cockpit Map &rarr;
         </button>
@@ -1800,6 +1822,317 @@
 
         </div>
 
+      </div>
+    </section>
+
+  
+    <!-- ================= SCREEN 9: INDIAN ARMED FORCES DEFENSE SYSTEMS ================= -->
+    <section id="screen-defense" class="hidden space-y-5">
+      <!-- Tactical Top Command Banner -->
+      <div class="bg-gradient-to-r from-amber-950/70 via-slate-900 to-amber-950/70 border border-amber-500/40 p-5 rounded-2xl shadow-2xl relative overflow-hidden">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-amber-600/20 border border-amber-400/50 flex items-center justify-center text-amber-300 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-base font-bold font-mono text-white tracking-wider uppercase">
+                  Indian Armed Forces Defense Systems Command
+                </h2>
+                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/40">
+                  CLASSIFIED // TRI-SERVICE DOCTRINE
+                </span>
+              </div>
+              <p class="text-xs text-gray-300 font-mono mt-1">
+                Multi-Agent Target Designation & Tactical Countermeasures: Indian Army, Navy, IAF, BSF & Coast Guard
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="exportDefensePdf()" class="px-3.5 py-2 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-black font-mono text-xs font-bold rounded-xl flex items-center gap-1.5 cursor-pointer shadow-lg border border-amber-300 transition-all">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span>Export Defense Mission PDF</span>
+            </button>
+            <button onclick="exportDefenseJson()" class="px-3 py-2 bg-[#0C1425] hover:bg-slate-800 text-amber-300 border border-amber-500/40 text-xs font-mono rounded-xl cursor-pointer transition-all">
+              Download GeoJSON
+            </button>
+          </div>
+        </div>
+
+        <!-- Armed Forces Branch Selector Bar -->
+        <div class="mt-4 pt-4 border-t border-amber-500/20 flex flex-wrap gap-2 text-xs font-mono">
+          <button onclick="selectDefenseBranch('army')" id="btn-branch-army" class="px-3.5 py-1.5 rounded-xl bg-amber-600 text-black font-bold shadow-md transition-all flex items-center gap-1.5">
+            <span>🛡️ Indian Army</span>
+          </button>
+          <button onclick="selectDefenseBranch('navy')" id="btn-branch-navy" class="px-3.5 py-1.5 rounded-xl bg-[#090F1E] border border-gray-700 text-gray-300 hover:text-white transition-all flex items-center gap-1.5">
+            <span>⚓ Indian Navy</span>
+          </button>
+          <button onclick="selectDefenseBranch('airforce')" id="btn-branch-airforce" class="px-3.5 py-1.5 rounded-xl bg-[#090F1E] border border-gray-700 text-gray-300 hover:text-white transition-all flex items-center gap-1.5">
+            <span>✈️ Indian Air Force</span>
+          </button>
+          <button onclick="selectDefenseBranch('bsf')" id="btn-branch-bsf" class="px-3.5 py-1.5 rounded-xl bg-[#090F1E] border border-gray-700 text-gray-300 hover:text-white transition-all flex items-center gap-1.5">
+            <span>🚨 Border Security Force (BSF)</span>
+          </button>
+          <button onclick="selectDefenseBranch('coastguard')" id="btn-branch-coastguard" class="px-3.5 py-1.5 rounded-xl bg-[#090F1E] border border-gray-700 text-gray-300 hover:text-white transition-all flex items-center gap-1.5">
+            <span>🌊 Indian Coast Guard</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Active Defense Doctrine Card -->
+      <div id="defense-doctrine-card" class="bg-[#0B1120] border border-amber-500/30 p-5 rounded-2xl shadow-xl space-y-4 font-mono text-xs">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+            <span id="doctrine-name" class="text-white font-bold uppercase text-sm">S-400 Triumf & BrahMos Hypersonic Battery</span>
+          </div>
+          <span id="doctrine-envelope" class="px-2.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/40 text-[11px]">
+            Engagement Range: 400 km • Altitude: 30 km
+          </span>
+        </div>
+        <p id="doctrine-desc" class="text-gray-300 font-sans leading-relaxed text-xs">
+          Theater air and missile defense integration. Active multi-spectral radar tracking combined with high-resolution RISAT-1B SAR synthetic aperture microwave returns for anti-access / area-denial (A2/AD) perimeters.
+        </p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-[11px]">
+          <div class="bg-[#070B16] p-2.5 rounded-xl border border-gray-800">
+            <span class="text-gray-400 block text-[10px] uppercase">Reaction Time</span>
+            <span id="doctrine-reaction" class="text-emerald-400 font-bold text-xs">9.0 seconds</span>
+          </div>
+          <div class="bg-[#070B16] p-2.5 rounded-xl border border-gray-800">
+            <span class="text-gray-400 block text-[10px] uppercase">Max Target Velocity</span>
+            <span id="doctrine-velocity" class="text-cyan-400 font-bold text-xs">Mach 14 (4,800 m/s)</span>
+          </div>
+          <div class="bg-[#070B16] p-2.5 rounded-xl border border-gray-800">
+            <span class="text-gray-400 block text-[10px] uppercase">Interception Probability</span>
+            <span id="doctrine-pkill" class="text-amber-400 font-bold text-xs">96.8% (Single Shot)</span>
+          </div>
+          <div class="bg-[#070B16] p-2.5 rounded-xl border border-gray-800">
+            <span class="text-gray-400 block text-[10px] uppercase">Operational Status</span>
+            <span class="text-emerald-400 font-bold text-xs">LIVE &bull; DEFCON 2</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Combatant Threat Assessment Registry Table -->
+      <div class="bg-[#0B1120] border border-[#1F2937] rounded-2xl shadow-xl overflow-hidden">
+        <div class="p-4 border-b border-[#1F2937] flex items-center justify-between font-mono text-xs">
+          <div class="flex items-center gap-2">
+            <span class="text-white font-bold uppercase tracking-wider">Combatant Threat Assessment & Tracked Entities</span>
+            <span class="text-[10px] bg-red-950 text-red-300 px-2 py-0.5 rounded border border-red-600/40">5 Active Targets</span>
+          </div>
+          <span class="text-gray-400 text-[11px]">Auto-Corroborated by 9 AI Specialists</span>
+        </div>
+        <div class="overflow-x-auto font-mono text-xs">
+          <table class="w-full text-left">
+            <thead class="bg-[#070C18] text-gray-400 border-b border-gray-800 text-[11px] uppercase">
+              <tr>
+                <th class="py-3 px-4">Entity ID</th>
+                <th class="py-3 px-4">Classification</th>
+                <th class="py-3 px-4">Coordinates (MGRS)</th>
+                <th class="py-3 px-4">Threat Level</th>
+                <th class="py-3 px-4">Indian Defense Countermeasure</th>
+                <th class="py-3 px-4 text-right">Pk (Neutralize)</th>
+              </tr>
+            </thead>
+            <tbody id="defense-targets-tbody" class="divide-y divide-gray-800 text-gray-300 text-[11.5px]">
+              <tr class="hover:bg-slate-800/40 transition-colors">
+                <td class="py-3 px-4 font-bold text-cyan-300">TRK-IND-082</td>
+                <td class="py-3 px-4">Armor Column / MBT Unit</td>
+                <td class="py-3 px-4">34.2185° N, 77.5842° E</td>
+                <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-red-950 text-red-300 border border-red-500/40 font-bold text-[10px]">CRITICAL</span></td>
+                <td class="py-3 px-4 text-white">BrahMos-II Hypersonic / Pinaka Mk-III</td>
+                <td class="py-3 px-4 text-right font-bold text-emerald-400">97.4%</td>
+              </tr>
+              <tr class="hover:bg-slate-800/40 transition-colors">
+                <td class="py-3 px-4 font-bold text-cyan-300">TRK-IND-083</td>
+                <td class="py-3 px-4">Unmanned Aerial Loitering Munition</td>
+                <td class="py-3 px-4">32.7266° N, 74.8570° E</td>
+                <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/40 font-bold text-[10px]">HIGH</span></td>
+                <td class="py-3 px-4 text-white">Akash-NG Surface-to-Air SAM</td>
+                <td class="py-3 px-4 text-right font-bold text-emerald-400">95.2%</td>
+              </tr>
+              <tr class="hover:bg-slate-800/40 transition-colors">
+                <td class="py-3 px-4 font-bold text-cyan-300">TRK-IND-084</td>
+                <td class="py-3 px-4">Surface Vessel Combatant</td>
+                <td class="py-3 px-4">18.9220° N, 72.8346° E</td>
+                <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-500/40 font-bold text-[10px]">MODERATE</span></td>
+                <td class="py-3 px-4 text-white">INS Vikrant Carrier Air Wing / Naval BrahMos</td>
+                <td class="py-3 px-4 text-right font-bold text-emerald-400">99.1%</td>
+              </tr>
+              <tr class="hover:bg-slate-800/40 transition-colors">
+                <td class="py-3 px-4 font-bold text-cyan-300">TRK-IND-085</td>
+                <td class="py-3 px-4">Infiltration Perimeter Breaching Party</td>
+                <td class="py-3 px-4">27.0238° N, 70.9083° E</td>
+                <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-red-950 text-red-300 border border-red-500/40 font-bold text-[10px]">SEVERE</span></td>
+                <td class="py-3 px-4 text-white">BSF BOLD-QIT Thermal & Laser Barrier QRF</td>
+                <td class="py-3 px-4 text-right font-bold text-emerald-400">98.6%</td>
+              </tr>
+              <tr class="hover:bg-slate-800/40 transition-colors">
+                <td class="py-3 px-4 font-bold text-cyan-300">TRK-IND-086</td>
+                <td class="py-3 px-4">Unflagged Fast Trawler (EEZ Intrusion)</td>
+                <td class="py-3 px-4">11.6670° N, 92.7350° E</td>
+                <td class="py-3 px-4"><span class="px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/40 font-bold text-[10px]">ELEVATED</span></td>
+                <td class="py-3 px-4 text-white">Coast Guard Samarth OPV Interception Vector</td>
+                <td class="py-3 px-4 text-right font-bold text-emerald-400">94.8%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================= SCREEN 10: MULTI-TEMPORAL STATIC IMAGE COMPARISON ================= -->
+    <section id="screen-comparison" class="hidden space-y-5">
+      <!-- Tactical Top Header -->
+      <div class="bg-gradient-to-r from-cyan-950/80 via-slate-900 to-blue-950/80 border border-cyan-500/40 p-5 rounded-2xl shadow-2xl relative overflow-hidden">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-cyan-600/20 border border-cyan-400/50 flex items-center justify-center text-cyan-300 shadow-[0_0_20px_rgba(6,182,212,0.3)]">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-base font-bold font-mono text-white tracking-wider uppercase">
+                  Multi-Temporal Static Image Comparison Engine
+                </h2>
+                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/40">
+                  SIAMESE U-NET DIFF • SAR & OPTICAL
+                </span>
+              </div>
+              <p class="text-xs text-gray-300 font-mono mt-1">
+                Upload or select any SAR, NASA, Cartosat, or Sentinel satellite map images to perform bi-temporal AI change analysis.
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="exportComparisonPdf()" class="px-3.5 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-mono text-xs font-bold rounded-xl flex items-center gap-1.5 cursor-pointer shadow-lg border border-cyan-300 transition-all">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span>Export Comparison PDF Report</span>
+            </button>
+            <button onclick="exportComparisonJson()" class="px-3 py-2 bg-[#0C1425] hover:bg-slate-800 text-cyan-300 border border-cyan-500/40 text-xs font-mono rounded-xl cursor-pointer transition-all">
+              Download Delta GeoJSON
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dual Image Slot Upload and Comparison Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Slot A: Past / Baseline Image -->
+        <div class="bg-[#0B1120] border border-[#1F2937] p-4 rounded-2xl shadow-xl space-y-3 font-mono text-xs">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span>
+              <span class="text-white font-bold uppercase">Image Slot A: Baseline / Past Imagery</span>
+            </div>
+            <span class="text-gray-400 text-[10px]">T1 PRE-EVENT</span>
+          </div>
+          
+          <div class="relative h-64 bg-[#030611] rounded-xl border border-gray-800 overflow-hidden flex items-center justify-center group">
+            <img id="comp-img-a" src="/static/demo/kerala_sar_pre.png" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'250\'><rect fill=\'%23081120\' width=\'400\' height=\'250\'/><text fill=\'%2306b6d4\' x=\'50%\' y=\'50%\' font-family=\'monospace\' font-size=\'14\' text-anchor=\'middle\'>[BASELINE IMAGE T1 PRE-EVENT]</text></svg>'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Slot A Image" />
+            <div class="absolute bottom-2 left-2 bg-black/80 px-2 py-1 rounded text-[10px] text-cyan-300 border border-cyan-500/30">
+              Sensor: Sentinel-1 C-SAR (VV+VH)
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <label class="flex-1 py-2 px-3 bg-[#0F172A] hover:bg-slate-800 border border-gray-700 text-gray-300 rounded-xl text-center cursor-pointer transition-colors text-[11px]">
+              <span>📁 Upload Past Image</span>
+              <input type="file" accept="image/*" class="hidden" onchange="handleComparisonUpload(event, 'a')" />
+            </label>
+            <select onchange="setComparisonPreset('a', this.value)" class="bg-[#070C18] border border-gray-700 rounded-xl px-2.5 py-2 text-cyan-300 text-[11px] outline-none">
+              <option value="kerala_pre">Kerala Flood Pre-Event (SAR)</option>
+              <option value="bengaluru_pre">Bengaluru Urban 2022 (Optical)</option>
+              <option value="kedarnath_pre">Kedarnath Landslide 2013 (Cartosat)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Slot B: Current / Post Image -->
+        <div class="bg-[#0B1120] border border-[#1F2937] p-4 rounded-2xl shadow-xl space-y-3 font-mono text-xs">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
+              <span class="text-white font-bold uppercase">Image Slot B: Current / Operational Imagery</span>
+            </div>
+            <span class="text-cyan-400 text-[10px]">T2 POST-EVENT</span>
+          </div>
+          
+          <div class="relative h-64 bg-[#030611] rounded-xl border border-gray-800 overflow-hidden flex items-center justify-center group">
+            <img id="comp-img-b" src="/static/demo/kerala_sar_post.png" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'250\'><rect fill=\'%23081120\' width=\'400\' height=\'250\'/><text fill=\'%2338bdf8\' x=\'50%\' y=\'50%\' font-family=\'monospace\' font-size=\'14\' text-anchor=\'middle\'>[OPERATIONAL IMAGE T2 POST-EVENT]</text></svg>'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Slot B Image" />
+            <div class="absolute bottom-2 left-2 bg-black/80 px-2 py-1 rounded text-[10px] text-cyan-300 border border-cyan-500/30">
+              Sensor: RISAT-1B Hybrid Polarimetric
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <label class="flex-1 py-2 px-3 bg-[#0F172A] hover:bg-slate-800 border border-gray-700 text-gray-300 rounded-xl text-center cursor-pointer transition-colors text-[11px]">
+              <span>📁 Upload Current Image</span>
+              <input type="file" accept="image/*" class="hidden" onchange="handleComparisonUpload(event, 'b')" />
+            </label>
+            <select onchange="setComparisonPreset('b', this.value)" class="bg-[#070C18] border border-gray-700 rounded-xl px-2.5 py-2 text-cyan-300 text-[11px] outline-none">
+              <option value="kerala_post">Kerala Flood Post-Event (SAR)</option>
+              <option value="bengaluru_post">Bengaluru Urban 2026 (Optical)</option>
+              <option value="kedarnath_post">Kedarnath Landslide Post-Debris (Cartosat)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Execution Button -->
+      <div class="flex justify-center">
+        <button onclick="runComparisonPipeline()" id="btn-run-comp" class="px-8 py-3 bg-gradient-to-r from-blue-600 via-cyan-600 to-indigo-600 hover:from-blue-500 hover:to-cyan-500 text-white font-mono text-xs font-bold rounded-xl shadow-xl border border-cyan-400/40 cursor-pointer flex items-center gap-2 uppercase tracking-wider transition-all">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <span>Execute Multi-Agent Bi-Temporal Synthesis</span>
+        </button>
+      </div>
+
+      <!-- Quantitative Comparison Metrics Strip -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 font-mono text-xs">
+        <div class="bg-[#0B1120] border border-[#1F2937] p-4 rounded-2xl shadow-xl">
+          <span class="text-gray-400 block text-[10px] uppercase">Structural Deformation</span>
+          <span class="text-amber-400 font-bold text-lg">+34.2%</span>
+          <span class="text-gray-500 block text-[10px] mt-1">High-albedo expansion</span>
+        </div>
+        <div class="bg-[#0B1120] border border-[#1F2937] p-4 rounded-2xl shadow-xl">
+          <span class="text-gray-400 block text-[10px] uppercase">Hydrological Runoff</span>
+          <span class="text-cyan-400 font-bold text-lg">+62.8%</span>
+          <span class="text-gray-500 block text-[10px] mt-1">Specular SAR reflection</span>
+        </div>
+        <div class="bg-[#0B1120] border border-[#1F2937] p-4 rounded-2xl shadow-xl">
+          <span class="text-gray-400 block text-[10px] uppercase">Vegetation Shift</span>
+          <span class="text-emerald-400 font-bold text-lg">-18.5%</span>
+          <span class="text-gray-500 block text-[10px] mt-1">Canopy clearance index</span>
+        </div>
+        <div class="bg-[#0B1120] border border-[#1F2937] p-4 rounded-2xl shadow-xl">
+          <span class="text-gray-400 block text-[10px] uppercase">Confidence Bound</span>
+          <span class="text-blue-400 font-bold text-lg">98.4%</span>
+          <span class="text-gray-500 block text-[10px] mt-1">9-Agent Consensus</span>
+        </div>
+      </div>
+
+      <!-- Multi-Agent Consensus Syntheses Panel -->
+      <div class="bg-[#0B1120] border border-[#1F2937] p-5 rounded-2xl shadow-xl space-y-3 font-mono text-xs">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-white font-bold uppercase tracking-wider">Multi-Agent AI Expert Verification Log</span>
+        </div>
+        <div class="space-y-2 text-gray-300 text-[11.5px] font-sans">
+          <div class="bg-[#070B16] p-3 rounded-xl border border-gray-800 flex items-start gap-2.5">
+            <span class="px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-500/40 text-[10px] font-mono shrink-0">RADAR SPECIALIST</span>
+            <p>Phase coherence between baseline Sentinel-1 and current RISAT-1B confirms significant microwave dielectric permittivity reduction in sector NW, indicative of heavy standing water inundation.</p>
+          </div>
+          <div class="bg-[#070B16] p-3 rounded-xl border border-gray-800 flex items-start gap-2.5">
+            <span class="px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/40 text-[10px] font-mono shrink-0">OPTICAL ANALYST</span>
+            <p>High-resolution band ratioing reveals +34.2% newly poured concrete structures, matching tactical staging infrastructure footprints with 98.4% geometric alignment.</p>
+          </div>
+          <div class="bg-[#070B16] p-3 rounded-xl border border-gray-800 flex items-start gap-2.5">
+            <span class="px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/40 text-[10px] font-mono shrink-0">MILITARY RECON</span>
+            <p>Identified enhanced perimeter hardening along high-ground vectors. Defense countermeasure assignment validated against Tri-Service doctrine registry.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -2414,7 +2747,7 @@
     // Navigation Switcher
     function switchTab(tab) {
       currentTab = tab;
-      ['home', 'mission', 'workspace', 'sar', 'disaster', 'debate', 'evaluation', 'futuristic'].forEach(t => {
+      ['home', 'mission', 'workspace', 'sar', 'disaster', 'debate', 'evaluation', 'futuristic', 'defense', 'comparison'].forEach(t => {
         const sec = document.getElementById(`screen-${t}`);
         const btn = document.getElementById(`tab-${t}`);
         if (sec) sec.classList.add('hidden');
@@ -2441,6 +2774,12 @@
         if (map3DInstance && currentDimension === '3d') {
           setTimeout(() => { try { map3DInstance.resize(); } catch (e) {} }, 60);
         }
+      }
+            if (tab === 'defense') {
+        selectDefenseBranch(currentDefenseBranch);
+      }
+      if (tab === 'comparison') {
+        // Prepare comparison canvas
       }
       if (tab === 'mission') {
         setTimeout(resize3DCanvas, 60);
