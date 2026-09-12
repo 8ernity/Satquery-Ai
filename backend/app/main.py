@@ -12,7 +12,7 @@ from pathlib import Path
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
 import httpx
 
 from .api.health import router as health_router
@@ -138,6 +138,12 @@ async def get_root(request: Request):
     """System banner and metadata with browser frontend content negotiation."""
     accept = request.headers.get("accept", "")
     if "text/html" in accept:
+        preview_file = (PROJECT_ROOT / "index.html") if (PROJECT_ROOT / "index.html").exists() else (PROJECT_ROOT / "bhuvision_preview.html")
+        if preview_file.exists():
+            return HTMLResponse(
+                content=preview_file.read_text(encoding="utf-8"),
+                headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+            )
         return await _proxy_to_nextjs(request, "/")
 
     return {
@@ -213,7 +219,7 @@ async def _proxy_to_nextjs(request: Request, target_path: str) -> Response:
         for base_url in NEXTJS_CANDIDATE_URLS:
             target_url = f"{base_url}{target_path}{query_string}"
             try:
-                async with httpx.AsyncClient(timeout=httpx.Timeout(10.0, connect=0.5)) as client:
+                async with httpx.AsyncClient(timeout=httpx.Timeout(0.8, connect=0.15)) as client:
                     req_headers = {
                     k: v for k, v in request.headers.items()
                     if k.lower() not in ("host", "content-length", "content-encoding")
@@ -269,9 +275,8 @@ async def _proxy_to_nextjs(request: Request, target_path: str) -> Response:
     # 3. Fallback to standalone cockpit HTML
     preview_file = (PROJECT_ROOT / "index.html") if (PROJECT_ROOT / "index.html").exists() else (PROJECT_ROOT / "bhuvision_preview.html")
     if preview_file.exists():
-        return FileResponse(
-            preview_file,
-            media_type="text/html",
+        return HTMLResponse(
+            content=preview_file.read_text(encoding="utf-8"),
             headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
         )
 
@@ -279,10 +284,22 @@ async def _proxy_to_nextjs(request: Request, target_path: str) -> Response:
 
 
 @app.api_route("/app", methods=["GET", "HEAD"], tags=["Frontend Application"])
-@app.api_route("/app/{full_path:path}", methods=["GET", "HEAD", "POST"], tags=["Frontend Application"])
+@app.api_route("/app/", methods=["GET", "HEAD"], tags=["Frontend Application"])
 @app.api_route("/preview", methods=["GET", "HEAD"], tags=["Frontend Application"])
+async def get_interactive_cockpit(request: Request):
+    """Serves the BHUVISION Interactive Satellite Mission Cockpit instantly."""
+    preview_file = (PROJECT_ROOT / "index.html") if (PROJECT_ROOT / "index.html").exists() else (PROJECT_ROOT / "bhuvision_preview.html")
+    if preview_file.exists():
+        return HTMLResponse(
+            content=preview_file.read_text(encoding="utf-8"),
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
+        )
+    return JSONResponse(status_code=404, content={"error": "Mission Cockpit HTML not found"})
+
+
+@app.api_route("/app/{full_path:path}", methods=["GET", "HEAD", "POST"], tags=["Frontend Application"])
 async def get_interactive_app(request: Request, full_path: str = ""):
-    """Serves the active Next.js frontend application with real-time updates."""
+    """Serves sub-paths or proxies to Next.js if requested."""
     target_path = f"/{full_path}" if full_path else "/"
     return await _proxy_to_nextjs(request, target_path)
 
@@ -305,7 +322,7 @@ async def get_standalone_3d_preview():
     """Serves the standalone Three.js God's Eye WebGL preview."""
     preview_file = (PROJECT_ROOT / "bhuvision_preview.html") if (PROJECT_ROOT / "bhuvision_preview.html").exists() else (PROJECT_ROOT / "index.html")
     if preview_file.exists():
-        return FileResponse(preview_file, media_type="text/html")
+        return HTMLResponse(content=preview_file.read_text(encoding="utf-8"))
     return {"error": "Application file not found", "path": str(preview_file)}
 
 

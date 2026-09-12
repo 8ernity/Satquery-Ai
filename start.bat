@@ -12,10 +12,10 @@ for /f "tokens=5" %%a in ('netstat -aon ^| findstr ":8000" ^| findstr "LISTENING
     taskkill /F /PID %%a >nul 2>&1
 )
 
-echo [2/3] Opening browser at http://localhost:8000/app...
-start "" http://localhost:8000/app
+echo [2/3] Scheduling browser launch at http://127.0.0.1:8000/app...
+start "" powershell -Command "Start-Sleep -Milliseconds 1500; Start-Process 'http://127.0.0.1:8000/app'"
 
-echo [3/3] Starting backend server...
+echo [3/3] Starting backend server on http://localhost:8000/app ...
 cd /d "%~dp0backend"
 python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 pause
