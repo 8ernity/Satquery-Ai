@@ -167,7 +167,6 @@ async def get_manifest():
 NEXTJS_CANDIDATE_URLS = [
     "http://127.0.0.1:3000",
     "http://localhost:3000",
-    "http://[::1]:3000",
 ]
 
 _MIME_TYPES = {
@@ -186,15 +185,22 @@ _MIME_TYPES = {
     ".webp": "image/webp",
 }
 
+import asyncio
 
-import socket
-
-def _is_nextjs_live(port: int = 3000, timeout: float = 0.05) -> bool:
-    """Instantaneous TCP socket probe to verify if Next.js dev server is running on port 3000."""
+async def _is_nextjs_live(port: int = 3000, timeout: float = 0.05) -> bool:
+    """Non-blocking async TCP probe to verify if Next.js dev server is running on port 3000."""
     try:
-        with socket.create_connection(("127.0.0.1", port), timeout=timeout):
-            return True
-    except OSError:
+        _, writer = await asyncio.wait_for(
+            asyncio.open_connection("127.0.0.1", port),
+            timeout=timeout,
+        )
+        writer.close()
+        try:
+            await writer.wait_closed()
+        except Exception:
+            pass
+        return True
+    except Exception:
         return False
 
 
@@ -203,7 +209,7 @@ async def _proxy_to_nextjs(request: Request, target_path: str) -> Response:
     query_string = f"?{request.url.query}" if request.url.query else ""
 
     # 1. Try forwarding to active Next.js server if port 3000 is listening
-    if _is_nextjs_live(3000):
+    if await _is_nextjs_live(3000):
         for base_url in NEXTJS_CANDIDATE_URLS:
             target_url = f"{base_url}{target_path}{query_string}"
             try:
